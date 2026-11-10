@@ -1,0 +1,10 @@
+# IoT Smart Greenhouse - Gateway & AI Python Dependencies
+paho-mqtt>=2.0.0
+pyyaml>=6.0
+streamlit>=1.30.0
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+tensorflow-cpu>=2.15.0
+pyserial>=3.5
+google-genai>=0.1.0

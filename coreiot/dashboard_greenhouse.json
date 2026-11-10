@@ -1,0 +1,366 @@
+{
+  "title": "Smart Greenhouse Climate Dashboard (HK261)",
+  "image": null,
+  "mobileHide": false,
+  "mobileOrder": null,
+  "configuration": {
+    "description": "Smart Greenhouse Real-Time Monitoring & Edge AI (HK261)",
+    "widgets": {
+      "fd241973-1f1f-4aef-be8c-48f923b68c1b": {
+        "isSystemType": true,
+        "bundleAlias": "cards",
+        "typeAlias": "value_card",
+        "type": "latest",
+        "title": "Nhiệt độ (°C)",
+        "image": null,
+        "description": null,
+        "sizeX": 6,
+        "sizeY": 4,
+        "config": {
+          "datasources": [
+            {
+              "type": "entity",
+              "entityAliasId": "c339ee09-3242-4c0f-b8d1-53c309f19bc9",
+              "dataKeys": [
+                {
+                  "name": "temperature",
+                  "type": "timeseries",
+                  "label": "Nhiệt độ",
+                  "color": "#e65100",
+                  "settings": {}
+                }
+              ]
+            }
+          ],
+          "showTitle": true,
+          "title": "Nhiệt độ (°C)",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "settings": {
+            "units": "°C",
+            "decimals": 1
+          }
+        }
+      },
+      "571a9b5c-ab6e-46cc-af96-ec4643dfdad7": {
+        "isSystemType": true,
+        "bundleAlias": "cards",
+        "typeAlias": "value_card",
+        "type": "latest",
+        "title": "Độ ẩm (%)",
+        "image": null,
+        "description": null,
+        "sizeX": 6,
+        "sizeY": 4,
+        "config": {
+          "datasources": [
+            {
+              "type": "entity",
+              "entityAliasId": "c339ee09-3242-4c0f-b8d1-53c309f19bc9",
+              "dataKeys": [
+                {
+                  "name": "humidity",
+                  "type": "timeseries",
+                  "label": "Độ ẩm",
+                  "color": "#0288d1",
+                  "settings": {}
+                }
+              ]
+            }
+          ],
+          "showTitle": true,
+          "title": "Độ ẩm (%)",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "settings": {
+            "units": "%",
+            "decimals": 1
+          }
+        }
+      },
+      "0c286a3e-7b01-401f-a2aa-f7dbbfb2ac00": {
+        "isSystemType": true,
+        "bundleAlias": "cards",
+        "typeAlias": "value_card",
+        "type": "latest",
+        "title": "Độ hụt áp suất hơi (VPD)",
+        "image": null,
+        "description": null,
+        "sizeX": 6,
+        "sizeY": 4,
+        "config": {
+          "datasources": [
+            {
+              "type": "entity",
+              "entityAliasId": "c339ee09-3242-4c0f-b8d1-53c309f19bc9",
+              "dataKeys": [
+                {
+                  "name": "vpd",
+                  "type": "timeseries",
+                  "label": "VPD",
+                  "color": "#2e7d32",
+                  "settings": {}
+                }
+              ]
+            }
+          ],
+          "showTitle": true,
+          "title": "VPD (kPa)",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "settings": {
+            "units": "kPa",
+            "decimals": 2
+          }
+        }
+      },
+      "692487d7-f900-471d-914a-d7f7932b42a1": {
+        "isSystemType": true,
+        "bundleAlias": "cards",
+        "typeAlias": "latest_values",
+        "type": "latest",
+        "title": "Trạng thái Edge AI (TinyML)",
+        "image": null,
+        "description": null,
+        "sizeX": 6,
+        "sizeY": 4,
+        "config": {
+          "datasources": [
+            {
+              "type": "entity",
+              "entityAliasId": "c339ee09-3242-4c0f-b8d1-53c309f19bc9",
+              "dataKeys": [
+                {
+                  "name": "tinyml_state_str",
+                  "type": "timeseries",
+                  "label": "Trạng thái AI",
+                  "color": "#6a1b9a",
+                  "settings": {}
+                },
+                {
+                  "name": "tinyml_confidence",
+                  "type": "timeseries",
+                  "label": "Độ tin cậy",
+                  "color": "#43a047",
+                  "settings": {}
+                }
+              ]
+            }
+          ],
+          "showTitle": true,
+          "title": "Trạng thái Edge AI",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "settings": {}
+        }
+      },
+      "f5ac8d86-b0b3-462d-996c-1fa87081d322": {
+        "isSystemType": true,
+        "bundleAlias": "control_widgets",
+        "typeAlias": "round_switch",
+        "type": "rpc",
+        "title": "Công tắc Quạt thông gió",
+        "image": null,
+        "description": null,
+        "sizeX": 6,
+        "sizeY": 4,
+        "config": {
+          "targetDevice": {
+            "type": "entity",
+            "entityAliasId": "c339ee09-3242-4c0f-b8d1-53c309f19bc9"
+          },
+          "showTitle": true,
+          "title": "Quạt thông gió (FAN)",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "settings": {
+            "initialValueMethod": "getStateFAN",
+            "methodParams": "",
+            "parseValueFunction": "return data ? true : false;",
+            "retrieveValueMethod": "getStateFAN",
+            "setValueMethod": "setStateFAN",
+            "requestTimeout": 5000,
+            "switchTitle": "Quạt thông gió"
+          }
+        }
+      },
+      "bbf84da3-9d02-41fd-96de-20de7ddfa013": {
+        "isSystemType": true,
+        "bundleAlias": "control_widgets",
+        "typeAlias": "round_switch",
+        "type": "rpc",
+        "title": "Công tắc Máy phun sương",
+        "image": null,
+        "description": null,
+        "sizeX": 6,
+        "sizeY": 4,
+        "config": {
+          "targetDevice": {
+            "type": "entity",
+            "entityAliasId": "c339ee09-3242-4c0f-b8d1-53c309f19bc9"
+          },
+          "showTitle": true,
+          "title": "Phun sương (PUMP)",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "settings": {
+            "initialValueMethod": "getStatePUMP",
+            "methodParams": "",
+            "parseValueFunction": "return data ? true : false;",
+            "retrieveValueMethod": "getStatePUMP",
+            "setValueMethod": "setStatePUMP",
+            "requestTimeout": 5000,
+            "switchTitle": "Máy phun sương"
+          }
+        }
+      },
+      "3e6b346f-7e6b-467e-95fc-c3998bcd3381": {
+        "isSystemType": true,
+        "bundleAlias": "charts",
+        "typeAlias": "timeseries",
+        "type": "timeseries",
+        "title": "Biểu đồ Chuỗi thời gian Vi khí hậu & Dự báo AI",
+        "image": null,
+        "description": null,
+        "sizeX": 12,
+        "sizeY": 6,
+        "config": {
+          "datasources": [
+            {
+              "type": "entity",
+              "entityAliasId": "c339ee09-3242-4c0f-b8d1-53c309f19bc9",
+              "dataKeys": [
+                {
+                  "name": "temperature",
+                  "type": "timeseries",
+                  "label": "Nhiệt độ (°C)",
+                  "color": "#e65100",
+                  "settings": {}
+                },
+                {
+                  "name": "humidity",
+                  "type": "timeseries",
+                  "label": "Độ ẩm (%)",
+                  "color": "#0288d1",
+                  "settings": {}
+                },
+                {
+                  "name": "predicted_temp_60m",
+                  "type": "timeseries",
+                  "label": "Dự báo (+60m)",
+                  "color": "#d81b60",
+                  "settings": {}
+                }
+              ]
+            }
+          ],
+          "showTitle": true,
+          "title": "Biểu đồ Vi khí hậu & Dự báo AI (+60 phút)",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "settings": {
+            "stack": false,
+            "fontSize": 10
+          }
+        }
+      }
+    },
+    "states": {
+      "default": {
+        "name": "Smart Greenhouse Climate Dashboard (HK261)",
+        "root": true,
+        "layouts": {
+          "main": {
+            "widgets": {
+              "fd241973-1f1f-4aef-be8c-48f923b68c1b": {
+                "sizeX": 6,
+                "sizeY": 4,
+                "row": 0,
+                "col": 0
+              },
+              "571a9b5c-ab6e-46cc-af96-ec4643dfdad7": {
+                "sizeX": 6,
+                "sizeY": 4,
+                "row": 0,
+                "col": 6
+              },
+              "0c286a3e-7b01-401f-a2aa-f7dbbfb2ac00": {
+                "sizeX": 6,
+                "sizeY": 4,
+                "row": 0,
+                "col": 12
+              },
+              "692487d7-f900-471d-914a-d7f7932b42a1": {
+                "sizeX": 6,
+                "sizeY": 4,
+                "row": 0,
+                "col": 18
+              },
+              "f5ac8d86-b0b3-462d-996c-1fa87081d322": {
+                "sizeX": 6,
+                "sizeY": 4,
+                "row": 4,
+                "col": 0
+              },
+              "bbf84da3-9d02-41fd-96de-20de7ddfa013": {
+                "sizeX": 6,
+                "sizeY": 4,
+                "row": 4,
+                "col": 6
+              },
+              "3e6b346f-7e6b-467e-95fc-c3998bcd3381": {
+                "sizeX": 12,
+                "sizeY": 6,
+                "row": 4,
+                "col": 12
+              }
+            },
+            "gridSettings": {
+              "backgroundColor": "#f8f9fa",
+              "columns": 24,
+              "margin": 10,
+              "outerMargin": true
+            }
+          }
+        }
+      }
+    },
+    "entityAliases": {
+      "c339ee09-3242-4c0f-b8d1-53c309f19bc9": {
+        "id": "c339ee09-3242-4c0f-b8d1-53c309f19bc9",
+        "alias": "GreenhouseDevice",
+        "filter": {
+          "type": "entityType",
+          "entityType": "DEVICE",
+          "resolveMultiple": false
+        }
+      }
+    },
+    "timewindow": {
+      "displayValue": "",
+      "hideInterval": false,
+      "hideAggregation": false,
+      "hideAggInterval": false,
+      "hideTimezone": false,
+      "selectedTab": 0,
+      "realtime": {
+        "realtimeType": 0,
+        "interval": 1000,
+        "timewindowMs": 60000
+      },
+      "aggregation": {
+        "type": "NONE",
+        "limit": 25000
+      }
+    },
+    "settings": {
+      "stateControllerId": "entity",
+      "showTitle": false,
+      "showDashboardsSelect": true,
+      "showEntitiesSelect": true,
+      "showDashboardTimewindow": true,
+      "showDashboardExport": true,
+      "toolbarAlwaysOpen": true
+    }
+  }
+}

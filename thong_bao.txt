@@ -1,0 +1,162 @@
+ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH
+TRƯỜNG ĐẠI HỌC BÁCH KHOA
+KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH
+YÊU CẦU BÀI TẬP LỚN MÔN HỌC INTERNET OF THINGS (IoT)
+Học kỳ 261 – Năm học 2025 –2026
+Nhằm giúp sinh viên vận dụng tổng hợp kiến thức của môn học vào một hệ thống IoT hoàn chỉnh, giảng viên phụ trách thông báo đến các nhóm sinh viên yêu cầu, thang điểm và quy định thực hiện Bài tập lớn (BTL) như sau.
+1. Thông tin chung
+Hạng mục
+Nội dung
+Hình thức
+Làm theo nhóm, tối đa 3 sinh viên/nhóm
+Nền tảng bắt buộc
+Server CoreIOT và mạch lập trình ESP32-S3 (YoloUNO)
+Đề tài
+Sinh viên tự đề xuất đề tài và tự định nghĩa các chức năng của hệ thống
+Sản phẩm nộp
+Báo cáo (theo file báo cáo mẫu), mã nguồn trên GitHub, video demo
+Trọng số trong môn học
+[30% điểm tổng kết]
+Giảng viên phụ trách
+TS. Lê Trọng Nhân – trongnhanle@hcmut.edu.vn
+2. Yêu cầu chung
+Bài tập lớn tập trung sử dụng các công nghệ cảm biến và kết nối dựa trên nền tảng CoreIOT và mạch lập trình ESP32-S3 (YoloUNO). Sinh viên được khuyến khích tham khảo và phát triển tiếp từ các dự án mẫu đã được trình bày trên CoreIOT; khi đó cần ghi rõ phần kế thừa và phần nhóm tự phát triển.
+Hệ thống cần có sự tích hợp của nhiều thiết bị cùng hoạt động. Nhóm được chọn một trong hai mô hình kết nối sau, hoặc kết hợp cả hai:
+Mô hình kết nối trực tiếp: mỗi thiết bị kết nối dữ liệu độc lập với server CoreIOT; các tính năng thông minh được triển khai bằng RuleChain.
+Mô hình qua IoT Gateway: các thiết bị kết nối với một thiết bị đóng vai trò IoT Gateway để tổng hợp dữ liệu, sau đó Gateway mới gửi dữ liệu lên server CoreIOT.
+Các tính năng của hệ thống phải được mô tả cụ thể trong phần Giới thiệu của báo cáo. Khi phân tích và lựa chọn công nghệ hiện thực, nhóm bắt buộc ánh xạ từng tính năng vào danh sách các yếu tố công nghệ ở Mục 3 (sử dụng mã T01–T15, N01–N07). Trường hợp sử dụng công nghệ ngoài danh sách, nhóm cần mô tả công nghệ đó trong phần phân tích hệ thống.
+3. Thang điểm
+3.1. Các yếu tố công nghệ (tối đa 8 điểm)
+Điểm của phần này là tổng điểm các yếu tố công nghệ mà nhóm hiện thực thành công và có minh chứng trong báo cáo, demo; tổng tối đa là 8 điểm dù tổng điểm các yếu tố đã hiện thực có thể vượt quá 8. Nhóm có quyền tự lựa chọn tổ hợp các yếu tố phù hợp với đề tài.
+Mã
+Yếu tố công nghệ
+Điểm
+Nhóm 1 – Cảm biến
+T01
+Cảm biến sử dụng giao tiếp I2C trên Tasmota
+0.5
+T02
+Cảm biến sử dụng giao tiếp Modbus RS485
+1.0
+T03
+Cảm biến sử dụng kết nối BLE với thiết bị khác
+1.5
+Nhóm 2 – Trí tuệ nhân tạo trên thiết bị (TinyML)
+T04
+Thông tin được nội suy từ AI (TinyML chạy trên thiết bị)
+1.0
+T05
+Công cụ thu thập dữ liệu, huấn luyện và export ra model TinyML
+1.0
+Nhóm 3 – Giao tiếp và giao diện cục bộ
+T06
+Giao tiếp không dây sử dụng ESP-NOW
+1.5
+T07
+Webserver trên thiết bị (tự hiện thực – hiển thị, điều khiển local)
+1.0
+Nhóm 4 – IoT Gateway cục bộ
+T08
+IoT Gateway hiện thực trên PC (hoặc Raspberry Pi): tổng hợp dữ liệu, gửi lên CoreIOT, nhận lệnh điều khiển từ CoreIOT và phân phối cho các thiết bị trong mạng local
+1.0
+T09
+Chức năng AI chạy trên IoT Gateway local để phân tích dữ liệu, phát hiện (detect) và gửi kết quả lên server
+1.0
+T10
+Giao diện giám sát – điều khiển trên IoT Gateway local
+1.0
+Nhóm 5 – Nền tảng CoreIOT
+T11
+Sử dụng template để phát triển ứng dụng, thiết kế dashboard, giám sát và điều khiển từ xa
+1.0
+T12
+Sử dụng RuleChain để phát triển tính năng thông minh
+1.0
+T13
+Gửi cảnh báo bằng notification khi dữ liệu vượt ngưỡng
+0.5
+T14
+Cập nhật firmware OTA cho thiết bị
+2.0
+T15
+IoT Gateway trên CoreIOT đồng bộ với IoT Gateway local
+2.0
+3.2. Báo cáo (tối đa 2 điểm)
+Báo cáo được trình bày theo file báo cáo mẫu đính kèm, gồm các phần sau:
+Phần
+Yêu cầu
+1. Giới thiệu
+Phát biểu vấn đề, đề xuất tính năng hệ thống rõ ràng; có tham khảo tốt (tối thiểu 5 tài liệu tham khảo)
+2. Phân tích hệ thống
+Phân rã chức năng, phân lớp tính năng (Cảm biến, Gateway, AI, Giao tiếp), ánh xạ đến các yếu tố công nghệ ở Mục 3.1
+3. Hiện thực hệ thống
+Trình bày phần hiện thực và kết quả của từng phần
+4. Đo đạc, thử nghiệm
+Kịch bản thử nghiệm, số liệu đo đạc và đánh giá hệ thống
+5. Kết luận – Mở rộng
+Tổng kết kết quả đạt được, hạn chế và hướng phát triển
+6. Hướng dẫn sử dụng mã nguồn
+Hướng dẫn cài đặt, cấu hình và chạy mã nguồn trên GitHub
+3.3. Các tính năng nâng cao (điểm cộng, tối đa 1 điểm)
+Mã
+Tính năng nâng cao
+Điểm
+N01
+Trợ lý ảo – LLM
+1.0
+N02
+Giọng nói – Âm thanh
+1.0
+N03
+Màn hình hiển thị dựa trên LVGL
+1.0
+N04
+AI chạy bằng GPU của thiết bị
+1.0
+N05
+Ứng dụng mobile được thiết kế riêng
+1.0
+N06
+Giao diện dashboard thiết kế riêng, có khả năng phát hiện (detect) và ghi nhận (record) các sự kiện
+1.0
+N07
+Tự triển khai (deploy) ThingsBoard trên máy local
+1.0
+3.4. Cách tính điểm
+Điểm BTL = min(8; Σ Công nghệ) + Báo cáo (≤ 2) + min(1; Σ Nâng cao), tối đa 10 điểm
+Một yếu tố chỉ được tính điểm có minh chứng (hình ảnh, log, video, mã nguồn) trong báo cáo.
+Một yếu tố hiện thực một phần sẽ được giảng viên đánh giá điểm tương ứng với mức độ hoàn thành.
+Điểm cá nhân có thể được điều chỉnh dựa trên bảng phân công, mức độ đóng góp và kết quả vấn đáp trong buổi báo cáo.
+4. Sản phẩm cần nộp
+Báo cáo định dạng PDF, trình bày theo file báo cáo mẫu; đặt tên: [Mã lớp]_[Mã nhóm]_BaoCaoIoT.pdf. Báo cáo phải có Bảng tự đánh giá yếu tố công nghệ và Bảng phân công công việc.
+Mã nguồn trên GitHub (public, hoặc cấp quyền truy cập cho giảng viên), có file README.md hướng dẫn sử dụng; lịch sử commit thể hiện quá trình làm việc của các thành viên.
+Video demo (khuyến nghị 5–10 phút) trình bày hoạt động thực tế của từng tính năng đã đăng ký tính điểm; đính kèm đường dẫn trong báo cáo.
+5. Kế hoạch thực hiện
+STT
+Nội dung
+Thời hạn
+Hình thức
+1
+Đăng ký nhóm và tên đề tài
+Tuần 10-11
+SV Tự chọn nhóm
+2
+Trình bày đề cương: mô tả tính năng, danh sách yếu tố công nghệ dự kiến
+Tuần 12-13
+Trực tiếp trên lớp (Không bắt buộc)
+4
+Nộp báo cáo, mã nguồn và video demo
+Tuần 16
+LMS
+5
+Demo và trao đổi
+Tuần 10-15
+Trực tiếp trên lớp (Không bắt buộc)
+6. Quy định chung
+Mọi tài liệu, mã nguồn, dự án mẫu tham khảo đều phải được trích dẫn đầy đủ. Các trường hợp sao chép báo cáo hoặc mã nguồn giữa các nhóm sẽ bị xử lý theo quy định về liêm chính học thuật của Nhà trường.
+Nhóm được phép sử dụng công cụ AI hỗ trợ lập trình và soạn thảo, nhưng phải ghi rõ phạm vi sử dụng trong báo cáo; mỗi thành viên phải giải thích được phần việc mình phụ trách khi vấn đáp.
+Nộp trễ hạn: Xem xét trừ điểm theo số ngày nộp trễ
+Các thắc mắc liên quan đến BTL, sinh viên liên hệ giảng viên qua email hoặc diễn đàn môn học trên LMS.
+TP. Hồ Chí Minh, ngày […] tháng […] năm [20…]
+Giảng viên phụ trách
+TS. Lê Trọng Nhân

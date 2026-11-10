@@ -1,0 +1,20 @@
+coreiot:
+  broker: "app.coreiot.io"
+  port: 1883
+  access_token: "mySecretToken2026Lab1"
+
+serial:
+  port: "COM3"
+  baudrate: 115200
+  timeout: 1.0
+  auto_detect: true
+
+ai:
+  sample_interval_sec: 2
+  prediction_horizon_minutes: 60
+  temp_high_threshold: 32.0
+  temp_low_threshold: 18.0
+  humi_high_threshold: 90.0
+  humi_low_threshold: 55.0
+  vpd_high_threshold: 1.4
+  vpd_low_threshold: 0.5

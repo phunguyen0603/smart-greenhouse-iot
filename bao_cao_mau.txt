@@ -1,0 +1,567 @@
+ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH
+TRƯỜNG ĐẠI HỌC BÁCH KHOA
+KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH
+BÁO CÁO BÀI TẬP LỚN
+MÔN HỌC: INTERNET OF THINGS (IoT)
+ĐỀ TÀI
+[TÊN ĐỀ TÀI VIẾT IN HOA]
+Giảng viên hướng dẫn: TS. Lê Trọng Nhân
+Lớp: [Mã lớp]     –     Nhóm: [Mã nhóm]
+STT
+Họ và tên
+MSSV
+Email
+1
+[Họ và tên]
+[MSSV]
+[email]@hcmut.edu.vn
+2
+[Họ và tên]
+[MSSV]
+[email]@hcmut.edu.vn
+3
+[Họ và tên]
+[MSSV]
+[email]@hcmut.edu.vn
+TP. Hồ Chí Minh, tháng […] năm [20…]
+THÔNG TIN NỘP BÀI
+Hạng mục
+Đường dẫn / Thông tin
+Kho mã nguồn GitHub
+[https://github.com/…]
+Video demo
+[https://…]
+Dashboard CoreIOT (public link, nếu có)
+[https://…]
+Ngày nộp
+[dd/mm/yyyy]
+BẢNG PHÂN CÔNG CÔNG VIỆC
+Hướng dẫn
+Liệt kê cụ thể phần việc từng thành viên phụ trách (gắn với mã yếu tố công nghệ nếu có) và tỉ lệ đóng góp. Tổng tỉ lệ đóng góp của nhóm là 100%. Bảng này được dùng để điều chỉnh điểm cá nhân và là cơ sở cho phần vấn đáp.
+STT
+Họ và tên
+MSSV
+Công việc phụ trách
+Đóng góp
+1
+[Họ và tên]
+[MSSV]
+[VD: Node cảm biến Modbus (T02), OTA (T14)]
+[…%]
+2
+[Họ và tên]
+[MSSV]
+[…]
+[…%]
+3
+[Họ và tên]
+[MSSV]
+[…]
+[…%]
+BẢNG TỰ ĐÁNH GIÁ CÁC YẾU TỐ CÔNG NGHỆ
+Hướng dẫn
+Đánh dấu các yếu tố nhóm đã hiện thực, ghi rõ mục trình bày trong báo cáo và minh chứng (thời điểm trong video demo, hình ảnh, đường dẫn mã nguồn). Giảng viên chấm điểm dựa trên bảng này; yếu tố không có minh chứng sẽ không được tính điểm.
+Điểm công nghệ tối đa 8 điểm; điểm tính năng nâng cao tối đa 1 điểm.
+Bảng A. Các yếu tố công nghệ (tối đa 8 điểm)
+Mã
+Yếu tố công nghệ
+Điểm
+Hiện thực
+Mục báo cáo
+Minh chứng
+Nhóm 1 – Cảm biến
+T01
+Cảm biến sử dụng giao tiếp I2C trên Tasmota
+0.5
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T02
+Cảm biến sử dụng giao tiếp Modbus RS485
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T03
+Cảm biến sử dụng kết nối BLE với thiết bị khác
+1.5
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+Nhóm 2 – Trí tuệ nhân tạo trên thiết bị (TinyML)
+T04
+Thông tin được nội suy từ AI (TinyML chạy trên thiết bị)
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T05
+Công cụ thu thập dữ liệu, huấn luyện và export ra model TinyML
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+Nhóm 3 – Giao tiếp và giao diện cục bộ
+T06
+Giao tiếp không dây sử dụng ESP-NOW
+1.5
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T07
+Webserver trên thiết bị (tự hiện thực – hiển thị, điều khiển local)
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+Nhóm 4 – IoT Gateway cục bộ
+T08
+IoT Gateway hiện thực trên PC (hoặc Raspberry Pi): tổng hợp dữ liệu, gửi lên CoreIOT, nhận lệnh điều khiển từ CoreIOT và phân phối cho các thiết bị trong mạng local
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T09
+Chức năng AI chạy trên IoT Gateway local để phân tích dữ liệu, phát hiện (detect) và gửi kết quả lên server
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T10
+Giao diện giám sát – điều khiển trên IoT Gateway local
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+Nhóm 5 – Nền tảng CoreIOT
+T11
+Sử dụng template để phát triển ứng dụng, thiết kế dashboard, giám sát và điều khiển từ xa
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T12
+Sử dụng RuleChain để phát triển tính năng thông minh
+1.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T13
+Gửi cảnh báo bằng notification khi dữ liệu vượt ngưỡng
+0.5
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T14
+Cập nhật firmware OTA cho thiết bị
+2.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+T15
+IoT Gateway trên CoreIOT đồng bộ với IoT Gateway local
+2.0
+Có/Không
+[Mục x.y]
+[link video / ảnh]
+Bảng B. Các tính năng nâng cao (tối đa 1 điểm)
+Mã
+Tính năng nâng cao
+Điểm
+Hiện thực
+Mục báo cáo
+Minh chứng
+N01
+Trợ lý ảo – LLM
+1.0
+Có/Không
+[Mục x.y]
+[link]
+N02
+Giọng nói – Âm thanh
+1.0
+Có/Không
+[Mục x.y]
+[link]
+N03
+Màn hình hiển thị dựa trên LVGL
+1.0
+Có/Không
+[Mục x.y]
+[link]
+N04
+AI chạy bằng GPU của thiết bị
+1.0
+Có/Không
+[Mục x.y]
+[link]
+N05
+Ứng dụng mobile được thiết kế riêng
+1.0
+Có/Không
+[Mục x.y]
+[link]
+N06
+Giao diện dashboard thiết kế riêng, có khả năng phát hiện (detect) và ghi nhận (record) các sự kiện
+1.0
+Có/Không
+[Mục x.y]
+[link]
+N07
+Tự triển khai (deploy) ThingsBoard trên máy local
+1.0
+Có/Không
+[Mục x.y]
+[link]
+Tổng điểm tự đánh giá: Công nghệ: […]/8   –   Nâng cao: […]/1
+MỤC LỤC
+THÔNG TIN NỘP BÀI1
+BẢNG PHÂN CÔNG CÔNG VIỆC1
+BẢNG TỰ ĐÁNH GIÁ CÁC YẾU TỐ CÔNG NGHỆ1
+MỤC LỤC1
+DANH MỤC TỪ VIẾT TẮT1
+CHƯƠNG 1. GIỚI THIỆU1
+1.1. Phát biểu vấn đề1
+1.2. Các giải pháp liên quan1
+1.3. Mục tiêu đề tài1
+1.4. Đề xuất tính năng hệ thống1
+1.5. Phạm vi và giới hạn1
+1.6. Cấu trúc báo cáo1
+CHƯƠNG 2. PHÂN TÍCH HỆ THỐNG1
+2.1. Kiến trúc tổng thể1
+2.2. Phân rã chức năng1
+2.3. Phân lớp tính năng1
+2.3.1. Lớp cảm biến1
+2.3.2. Lớp giao tiếp1
+2.3.3. Lớp IoT Gateway1
+2.3.4. Lớp trí tuệ nhân tạo1
+2.3.5. Lớp ứng dụng và nền tảng CoreIOT1
+2.4. Ánh xạ tính năng – yếu tố công nghệ1
+2.5. Công nghệ mới (nếu có)1
+2.6. Danh sách thiết bị phần cứng1
+CHƯƠNG 3. HIỆN THỰC HỆ THỐNG1
+3.1. Phần cứng và sơ đồ kết nối1
+3.2. Firmware trên thiết bị1
+3.2.1. Node [[tên node]] ([[mã công nghệ]])1
+3.2.2. Webserver trên thiết bị (T07)1
+3.3. Truyền thông giữa các thiết bị1
+3.4. IoT Gateway1
+3.5. Trí tuệ nhân tạo1
+3.5.1. Thu thập và chuẩn bị dữ liệu1
+3.5.2. Huấn luyện và đánh giá mô hình1
+3.5.3. Triển khai mô hình1
+3.6. Nền tảng CoreIOT1
+3.6.1. Device profile, template và dashboard (T11)1
+3.6.2. RuleChain (T12) và cảnh báo notification (T13)1
+3.6.3. Cập nhật firmware OTA (T14)1
+3.7. Các tính năng nâng cao1
+CHƯƠNG 4. ĐO ĐẠC VÀ THỬ NGHIỆM HỆ THỐNG1
+4.1. Môi trường và kịch bản thử nghiệm1
+4.2. Kết quả đo đạc1
+4.3. Đánh giá1
+CHƯƠNG 5. KẾT LUẬN VÀ HƯỚNG MỞ RỘNG1
+5.1. Kết quả đạt được1
+5.2. Hạn chế1
+5.3. Hướng mở rộng1
+CHƯƠNG 6. HƯỚNG DẪN SỬ DỤNG MÃ NGUỒN1
+6.1. Đường dẫn và cấu trúc thư mục1
+6.2. Yêu cầu môi trường1
+6.3. Cài đặt và cấu hình1
+6.4. Biên dịch, nạp và vận hành1
+TÀI LIỆU THAM KHẢO1
+PHỤ LỤC1
+(Nhấn chuột phải vào mục lục → Update Field để cập nhật số trang.)
+DANH MỤC TỪ VIẾT TẮT
+Từ viết tắt
+Ý nghĩa
+BLE
+Bluetooth Low Energy
+OTA
+Over-The-Air (cập nhật firmware từ xa)
+TinyML
+Tiny Machine Learning
+[…]
+[…]
+CHƯƠNG 1. GIỚI THIỆU
+Hướng dẫn
+Chương này trả lời các câu hỏi: Vấn đề là gì? Tại sao cần giải quyết? Hệ thống của nhóm làm được những gì? Độ dài khuyến nghị: 3–5 trang.
+Yêu cầu bắt buộc: có tối thiểu 5 tài liệu tham khảo có chất lượng (bài báo khoa học, tài liệu kỹ thuật chính thức, báo cáo thống kê, sản phẩm thương mại tương tự) và được trích dẫn trong nội dung theo dạng [1], [2]…
+1.1. Phát biểu vấn đề
+Hướng dẫn
+Mô tả bối cảnh thực tế và vấn đề cần giải quyết, đối tượng sử dụng, nhu cầu cụ thể. Nên có số liệu minh chứng (có trích dẫn) để cho thấy vấn đề là có thật và có ý nghĩa.
+Ví dụ: “Theo [1], … % ngập úng đô thị xảy ra … dẫn đến …; các giải pháp hiện tại như [2], [3] còn hạn chế ở …”.
+[Nội dung]
+1.2. Các giải pháp liên quan
+Hướng dẫn
+Khảo sát ngắn gọn 2–4 hệ thống/sản phẩm/nghiên cứu tương tự: chức năng chính, công nghệ sử dụng, ưu và nhược điểm. Kết thúc bằng nhận xét về khoảng trống mà đề tài của nhóm hướng đến.
+Có thể tổng hợp dưới dạng bảng so sánh để làm nổi bật điểm khác biệt của nhóm.
+[Nội dung]
+1.3. Mục tiêu đề tài
+Hướng dẫn
+Nêu mục tiêu tổng quát và các mục tiêu cụ thể, đo lường được (ví dụ: độ trễ cảnh báo dưới 5 giây, độ chính xác nhận dạng trên 90%, hệ thống gồm 3 node cảm biến…). Các mục tiêu này sẽ được kiểm chứng lại ở Chương 4.
+[Nội dung]
+1.4. Đề xuất tính năng hệ thống
+Hướng dẫn
+Đây là phần quan trọng nhất của Chương 1. Liệt kê toàn bộ tính năng của hệ thống, mỗi tính năng có mã định danh (F01, F02…) để tham chiếu xuyên suốt báo cáo.
+Mỗi tính năng cần mô tả rõ ràng, cụ thể, kiểm chứng được. Tránh mô tả chung chung như “giám sát thông minh”; nên viết “Đo nhiệt độ, độ ẩm mỗi 10 giây, hiển thị trên dashboard và cảnh báo khi nhiệt độ vượt 35 °C”.
+Bảng 1.1. Danh sách tính năng của hệ thống
+Mã
+Mô tả tính năng
+Thiết bị thực hiện
+Mức ưu tiên
+F01
+[Mô tả cụ thể tính năng]
+[Node 1]
+[Bắt buộc]
+F02
+[…]
+[Gateway]
+[Bắt buộc]
+F03
+[…]
+[CoreIOT]
+[Mở rộng]
+1.5. Phạm vi và giới hạn
+Hướng dẫn
+Nêu rõ những gì hệ thống sẽ làm và không làm trong khuôn khổ BTL (ví dụ: chỉ thử nghiệm trong phòng lab, chưa xét đến nguồn pin năng lượng mặt trời…).
+[Nội dung]
+1.6. Cấu trúc báo cáo
+[Tóm tắt nội dung các chương tiếp theo trong 1 đoạn văn.]
+CHƯƠNG 2. PHÂN TÍCH HỆ THỐNG
+Hướng dẫn
+Chương này chuyển các tính năng ở Mục 1.4 thành kiến trúc hệ thống và lựa chọn công nghệ. Mọi lựa chọn công nghệ phải được ánh xạ vào danh sách yếu tố công nghệ T01–T15, N01–N07 trong thông báo BTL.
+Khi sử dụng công nghệ ngoài danh sách, cần dành một mục để mô tả công nghệ đó (Mục 2.5).
+2.1. Kiến trúc tổng thể
+Hướng dẫn
+Vẽ sơ đồ khối toàn hệ thống: các node thiết bị, IoT Gateway, server CoreIOT, người dùng (dashboard, mobile). Thể hiện rõ hướng luồng dữ liệu (telemetry) và luồng điều khiển (RPC/command), cùng giao thức trên từng kết nối (I2C, RS485, BLE, ESP-NOW, Wi-Fi, MQTT, HTTP…).
+Nêu rõ nhóm chọn mô hình kết nối trực tiếp, mô hình qua IoT Gateway hay kết hợp, và lý do lựa chọn.
+[Chèn hình tại đây]
+Hình 2.1. Sơ đồ kiến trúc tổng thể hệ thống
+2.2. Phân rã chức năng
+Hướng dẫn
+Phân rã mỗi tính năng F0x thành các chức năng con (thu thập, xử lý, truyền, lưu trữ, hiển thị, điều khiển). Có thể dùng sơ đồ phân rã chức năng dạng cây hoặc sơ đồ use case.
+[Chèn hình tại đây]
+Hình 2.2. Sơ đồ phân rã chức năng
+2.3. Phân lớp tính năng
+Hướng dẫn
+Phân tích hệ thống theo từng lớp. Với mỗi lớp, trình bày: yêu cầu, các phương án công nghệ có thể dùng, phương án được chọn và lý do (so sánh về chi phí, độ trễ, tầm xa, năng lượng, độ phức tạp…).
+2.3.1. Lớp cảm biến
+Hướng dẫn
+Loại cảm biến, đại lượng đo, giao tiếp (I2C trên Tasmota – T01, Modbus RS485 – T02, BLE – T03), tần suất lấy mẫu, độ chính xác.
+[Nội dung]
+2.3.2. Lớp giao tiếp
+Hướng dẫn
+Giao tiếp giữa các thiết bị (ESP-NOW – T06, BLE…) và giữa thiết bị/gateway với CoreIOT (MQTT, HTTP). Mô tả định dạng gói tin, chủ đề (topic) MQTT, cấu trúc JSON telemetry/attribute/RPC.
+[Nội dung]
+2.3.3. Lớp IoT Gateway
+Hướng dẫn
+Nền tảng phần cứng (PC/Raspberry Pi), chức năng tổng hợp dữ liệu và phân phối lệnh (T08), giao diện local (T10), cơ chế đồng bộ với Gateway trên CoreIOT (T15).
+[Nội dung]
+2.3.4. Lớp trí tuệ nhân tạo
+Hướng dẫn
+Bài toán AI cần giải quyết (phân loại, phát hiện bất thường, dự báo…), vị trí chạy mô hình (trên thiết bị – T04, trên Gateway – T09, trên GPU – N04), dữ liệu đầu vào/đầu ra, công cụ huấn luyện (T05).
+[Nội dung]
+2.3.5. Lớp ứng dụng và nền tảng CoreIOT
+Hướng dẫn
+Device profile, template, dashboard (T11), RuleChain (T12), notification (T13), OTA (T14); ứng dụng mobile, dashboard riêng (N05, N06), trợ lý ảo (N01)… nếu có.
+[Nội dung]
+2.4. Ánh xạ tính năng – yếu tố công nghệ
+Hướng dẫn
+Bảng này liên kết Chương 1 với thang điểm. Mỗi tính năng F0x được ánh xạ vào một hoặc nhiều mã yếu tố công nghệ; ngược lại, mỗi yếu tố công nghệ đăng ký tính điểm phải phục vụ ít nhất một tính năng cụ thể.
+Bảng 2.1. Ánh xạ tính năng với các yếu tố công nghệ
+Tính năng
+Mô tả ngắn
+Mã công nghệ
+Thiết bị / Thành phần
+F01
+[…]
+[T02, T06]
+[Node 1 → Gateway]
+F02
+[…]
+[T08, T15]
+[Gateway PC]
+F03
+[…]
+[T12, T13]
+[CoreIOT RuleChain]
+2.5. Công nghệ mới (nếu có)
+Hướng dẫn
+Nếu sử dụng công nghệ ngoài danh sách (ví dụ LoRa, Zigbee, Matter, Node-RED…), mô tả nguyên lý hoạt động, lý do lựa chọn và vai trò trong hệ thống, có trích dẫn tài liệu.
+[Nội dung, hoặc ghi “Không sử dụng”]
+2.6. Danh sách thiết bị phần cứng
+Bảng 2.2. Danh sách thiết bị phần cứng
+STT
+Thiết bị / Linh kiện
+Giao tiếp
+SL
+Vai trò trong hệ thống
+1
+YoloUNO (ESP32-S3)
+Wi-Fi, BLE
+[…]
+[Node cảm biến / Gateway]
+2
+[Cảm biến …]
+[I2C / RS485]
+[…]
+[…]
+3
+[…]
+[…]
+[…]
+[…]
+CHƯƠNG 3. HIỆN THỰC HỆ THỐNG
+Hướng dẫn
+Trình bày phần hiện thực của từng thành phần đã phân tích ở Chương 2 và kết quả đạt được của từng phần (hình chụp mạch, ảnh màn hình dashboard, log, đoạn mã quan trọng).
+Chỉ trích các đoạn mã ngắn, quan trọng (cấu hình, xử lý chính); mã nguồn đầy đủ đặt trên GitHub. Mỗi mục nên ghi rõ mã yếu tố công nghệ liên quan, ví dụ: “3.2.1. Node đo mực nước (T02, T06)”.
+3.1. Phần cứng và sơ đồ kết nối
+Hướng dẫn
+Sơ đồ đấu nối từng node (chân GPIO, nguồn cấp, bộ chuyển đổi RS485…), hình chụp phần cứng thực tế.
+[Nội dung]
+[Chèn hình tại đây]
+Hình 3.1. Sơ đồ đấu nối và hình ảnh thực tế của node […]
+3.2. Firmware trên thiết bị
+Hướng dẫn
+Mỗi node trình bày một mục con: môi trường phát triển (Arduino/PlatformIO/ESP-IDF/Tasmota), sơ đồ luồng hoạt động hoặc máy trạng thái, các tác vụ chính (FreeRTOS task nếu có), cách kết nối CoreIOT hoặc Gateway. Nếu dùng Tasmota (T01), trình bày cấu hình template, rule và kết quả nhận dữ liệu.
+3.2.1. Node [[tên node]] ([[mã công nghệ]])
+[Nội dung]
+3.2.2. Webserver trên thiết bị (T07)
+Hướng dẫn
+Giao diện web nhóm tự hiện thực, các chức năng hiển thị/điều khiển local, ảnh chụp giao diện.
+[Nội dung]
+3.3. Truyền thông giữa các thiết bị
+Hướng dẫn
+Hiện thực BLE (T03), ESP-NOW (T06): ghép cặp, cấu trúc gói tin, cơ chế xác nhận/gửi lại. Minh chứng bằng log gửi – nhận.
+[Nội dung]
+3.4. IoT Gateway
+Hướng dẫn
+Ngôn ngữ, thư viện sử dụng; luồng tổng hợp dữ liệu và gửi lên CoreIOT; nhận lệnh từ CoreIOT và phân phối cho thiết bị (T08); AI trên Gateway (T09); giao diện giám sát – điều khiển local (T10); đồng bộ với Gateway trên CoreIOT (T15).
+[Nội dung]
+3.5. Trí tuệ nhân tạo
+Hướng dẫn
+Trình bày đầy đủ quy trình: thu thập dữ liệu (số mẫu, số lớp, cách gán nhãn) → tiền xử lý → huấn luyện (công cụ, kiến trúc mô hình) → đánh giá (độ chính xác, ma trận nhầm lẫn) → export và triển khai lên thiết bị (kích thước mô hình, thời gian suy luận). Tương ứng T04, T05, T09, N04.
+3.5.1. Thu thập và chuẩn bị dữ liệu
+[Nội dung]
+3.5.2. Huấn luyện và đánh giá mô hình
+[Nội dung]
+3.5.3. Triển khai mô hình
+[Nội dung]
+3.6. Nền tảng CoreIOT
+Hướng dẫn
+Mỗi mục con cần có ảnh chụp màn hình cấu hình và kết quả hoạt động thực tế.
+3.6.1. Device profile, template và dashboard (T11)
+[Nội dung]
+3.6.2. RuleChain (T12) và cảnh báo notification (T13)
+Hướng dẫn
+Chụp sơ đồ RuleChain, giải thích từng node xử lý, điều kiện kích hoạt, ngưỡng cảnh báo và kết quả notification nhận được.
+[Nội dung]
+3.6.3. Cập nhật firmware OTA (T14)
+Hướng dẫn
+Quy trình đóng gói và tải firmware lên CoreIOT, gán cho thiết bị, quá trình thiết bị tải và cập nhật; log và phiên bản trước/sau cập nhật.
+[Nội dung]
+3.7. Các tính năng nâng cao
+Hướng dẫn
+Trình bày các tính năng N01–N07 nhóm đã hiện thực (nếu có). Nếu không có, ghi “Không thực hiện”.
+[Nội dung]
+CHƯƠNG 4. ĐO ĐẠC VÀ THỬ NGHIỆM HỆ THỐNG
+Hướng dẫn
+Chương này kiểm chứng các mục tiêu ở Mục 1.3 bằng số liệu đo đạc thực tế, không chỉ mô tả “hệ thống hoạt động tốt”. Mỗi phép đo nên lặp lại nhiều lần và báo cáo giá trị trung bình, nhỏ nhất, lớn nhất.
+4.1. Môi trường và kịch bản thử nghiệm
+Hướng dẫn
+Mô tả không gian thử nghiệm, số lượng thiết bị, khoảng cách, điều kiện mạng; liệt kê các kịch bản (ví dụ: vận hành liên tục 24 giờ, mất kết nối Wi-Fi, mô phỏng giá trị vượt ngưỡng…).
+[Nội dung]
+4.2. Kết quả đo đạc
+Hướng dẫn
+Gợi ý các chỉ số: độ trễ đầu-cuối (cảm biến → dashboard), độ trễ điều khiển (dashboard → thiết bị), tỉ lệ mất gói (ESP-NOW, BLE), tầm xa truyền, độ chính xác và thời gian suy luận của mô hình AI, thời gian cập nhật OTA, thời gian phản hồi cảnh báo, công suất tiêu thụ. Nên biểu diễn bằng bảng kèm biểu đồ.
+Bảng 4.1. Tổng hợp kết quả đo đạc
+STT
+Chỉ số đo
+Số lần đo
+Trung bình
+Min / Max
+Mục tiêu
+1
+Độ trễ cảm biến → dashboard (ms)
+[…]
+[…]
+[…]
+[< …]
+2
+Tỉ lệ mất gói ESP-NOW (%)
+[…]
+[…]
+[…]
+[< …]
+3
+Độ chính xác mô hình AI (%)
+[…]
+[…]
+[…]
+[> …]
+4
+Thời gian cập nhật OTA (s)
+[…]
+[…]
+[…]
+[…]
+[Chèn hình tại đây]
+Hình 4.1. Biểu đồ […]
+4.3. Đánh giá
+Hướng dẫn
+So sánh kết quả với mục tiêu, giải thích nguyên nhân các trường hợp chưa đạt, các lỗi phát sinh trong quá trình thử nghiệm và cách khắc phục.
+[Nội dung]
+CHƯƠNG 5. KẾT LUẬN VÀ HƯỚNG MỞ RỘNG
+5.1. Kết quả đạt được
+Hướng dẫn
+Tóm tắt các tính năng đã hoàn thành so với đề xuất ở Mục 1.4 (có thể dùng bảng: Tính năng – Trạng thái Hoàn thành/Một phần/Chưa thực hiện).
+[Nội dung]
+5.2. Hạn chế
+Hướng dẫn
+Trình bày trung thực các hạn chế về kỹ thuật, quy mô thử nghiệm, độ ổn định.
+[Nội dung]
+5.3. Hướng mở rộng
+Hướng dẫn
+Đề xuất các hướng phát triển khả thi, cụ thể (ví dụ: bổ sung nguồn pin, mở rộng số node, triển khai thực địa…).
+[Nội dung]
+CHƯƠNG 6. HƯỚNG DẪN SỬ DỤNG MÃ NGUỒN
+Hướng dẫn
+Nội dung chương này cần đồng bộ với file README.md trên GitHub. Mục tiêu: một người khác có thể tự cài đặt và chạy lại được hệ thống chỉ bằng cách làm theo hướng dẫn.
+6.1. Đường dẫn và cấu trúc thư mục
+Kho mã nguồn: [https://github.com/…]
+iot-project/
+├── firmware/
+│   ├── node_sensor/      # Firmware node cảm biến
+│   └── node_actuator/    # Firmware node chấp hành
+├── gateway/              # Mã nguồn IoT Gateway (PC / Raspberry Pi)
+├── ai/                   # Dữ liệu, notebook huấn luyện, model đã export
+├── coreiot/              # File export dashboard, RuleChain (JSON)
+├── docs/                 # Hình ảnh, sơ đồ
+└── README.md
+(Cấu trúc trên chỉ mang tính tham khảo, nhóm điều chỉnh theo dự án thực tế.)
+6.2. Yêu cầu môi trường
+Hướng dẫn
+Phần cứng cần thiết; phần mềm và phiên bản (PlatformIO/Arduino IDE, Python, thư viện…).
+[Nội dung]
+6.3. Cài đặt và cấu hình
+Hướng dẫn
+Các bước clone, cài đặt thư viện, cấu hình Wi-Fi, access token của thiết bị trên CoreIOT, import dashboard và RuleChain. Không đưa mật khẩu, token thật lên GitHub – sử dụng file cấu hình mẫu (ví dụ config.example.h, .env.example).
+[Nội dung]
+6.4. Biên dịch, nạp và vận hành
+Hướng dẫn
+Lệnh biên dịch/nạp firmware, khởi chạy Gateway, thứ tự bật thiết bị, cách kiểm tra hệ thống hoạt động đúng.
+# Ví dụ
+pio run -e yolo_uno -t upload
+python gateway/main.py --config gateway/config.yaml
+TÀI LIỆU THAM KHẢO
+Hướng dẫn
+Tối thiểu 5 tài liệu, trình bày theo chuẩn IEEE, đánh số theo thứ tự xuất hiện trong báo cáo. Với tài liệu trực tuyến, ghi rõ đường dẫn và ngày truy cập. Hạn chế dùng blog cá nhân, diễn đàn làm nguồn chính.
+[1]  A. Tác giả, B. Tác giả, “Tên bài báo,” Tên tạp chí, vol. x, no. y, pp. 1–10, 2024.
+[2]  Espressif Systems, “ESP-NOW,” ESP-IDF Programming Guide. [Online]. Available: https://docs.espressif.com/… (truy cập: dd/mm/yyyy).
+[3]  […]
+[4]  […]
+[5]  […]
+PHỤ LỤC
+Hướng dẫn
+Các nội dung bổ sung (nếu có): bảng dữ liệu chi tiết, cấu hình đầy đủ, ảnh chụp bổ sung, khai báo phạm vi sử dụng công cụ AI trong quá trình thực hiện BTL.
+[Nội dung]

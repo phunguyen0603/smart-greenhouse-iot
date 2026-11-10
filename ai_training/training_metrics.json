@@ -1,0 +1,55 @@
+{
+  "test_accuracy": 0.9950000047683716,
+  "test_loss": 0.012742763385176659,
+  "model_size_bytes": 3228,
+  "confusion_matrix": [
+    [
+      200,
+      0,
+      0
+    ],
+    [
+      0,
+      200,
+      0
+    ],
+    [
+      3,
+      0,
+      197
+    ]
+  ],
+  "classification_report": {
+    "OPTIMAL": {
+      "precision": 0.9852216748768473,
+      "recall": 1.0,
+      "f1-score": 0.9925558312655087,
+      "support": 200.0
+    },
+    "HEAT_STRESS_DRY": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 200.0
+    },
+    "DISEASE_MOLD_RISK": {
+      "precision": 1.0,
+      "recall": 0.985,
+      "f1-score": 0.9924433249370277,
+      "support": 200.0
+    },
+    "accuracy": 0.995,
+    "macro avg": {
+      "precision": 0.9950738916256158,
+      "recall": 0.995,
+      "f1-score": 0.9949997187341788,
+      "support": 600.0
+    },
+    "weighted avg": {
+      "precision": 0.9950738916256158,
+      "recall": 0.995,
+      "f1-score": 0.9949997187341789,
+      "support": 600.0
+    }
+  }
+}

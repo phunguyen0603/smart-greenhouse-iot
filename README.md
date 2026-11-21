@@ -28,14 +28,15 @@ Hệ thống **Smart Greenhouse** là giải pháp IoT toàn diện ứng dụng
 | **IoT Gateway** | **T08** | IoT Gateway trên PC | Script Python cầu nối Serial/MQTT với CoreIOT, phân phối lệnh RPC xuống node | `gateway/gateway_service.py` | **1.0** |
 | | **T09** | AI chạy trên IoT Gateway | Dự báo chuỗi thời gian nhiệt ẩm trước 1 giờ, phát hiện sớm sốc nhiệt và đọng sương | `gateway/gateway_ai.py` | **1.0** |
 | | **T10** | Giao diện giám sát trên Gateway | Dashboard cục bộ bằng Streamlit trên máy tính, biểu đồ thời gian thực, điều khiển offline | `gateway/dashboard_app.py` | **1.0** |
-| **CoreIOT** | **T11** | Template & Dashboard CoreIOT | Thiết kế giao diện Dashboard: Gauges đo nhiệt ẩm, biểu đồ lịch sử, widget TinyML, switch RPC | `coreiot/dashboard_greenhouse.json` | **1.0** |
-| | **T12** | RuleChain CoreIOT | Tự động hóa: Nếu TinyML cảnh báo rủi ro $\implies$ tự động gửi RPC bật quạt hoặc bơm | `coreiot/rulechain_greenhouse.json` | **1.0** |
-| | **T13** | Notification vượt ngưỡng | Gửi tin nhắn cảnh báo tức thời qua Telegram Bot từ RuleChain | `coreiot/rulechain_greenhouse.json` | **0.5** |
+| | **T15** | Đồng bộ IoT Gateway với CoreIOT | Chuẩn Gateway MQTT API (`v1/gateway/*`) + SQLite Offline Buffer tự đồng bộ bù khi mất mạng | `gateway/gateway_service.py` | **2.0** |
+| **CoreIOT** | **T11** | Template & Dashboard CoreIOT | Thiết kế Dashboard trực tiếp trên CoreIOT: Gauges, biểu đồ lịch sử, thẻ TinyML/VPD, switch RPC | `app.coreiot.io` | **1.0** |
+| | **T12** | RuleChain CoreIOT | Tự động hóa: Nếu TinyML/Nhiệt/Ẩm cảnh báo rủi ro $\implies$ tự động gửi RPC bật quạt | `app.coreiot.io` | **1.0** |
+| | **T13** | Notification vượt ngưỡng | Cảnh báo tức thời qua CoreIOT Notification Center (Web/Email) & Telegram | `app.coreiot.io` | **0.5** |
 | | **T14** | Cập nhật firmware OTA | Hỗ trợ nạp firmware từ xa qua Wi-Fi bằng ArduinoOTA và HTTP Update | `firmware/yolo_uno_greenhouse/src/ota_service.cpp` | **2.0** |
-| **TỔNG CÔNG NGHỆ** | | *(Lấy trần tối đa 8.0)* | **Tổng điểm các yếu tố đã hiện thực: 11.5 điểm $\implies$ Đạt tối đa** | | **8.0 / 8.0** |
+| **TỔNG CÔNG NGHỆ** | | *(Lấy trần tối đa 8.0)* | **Tổng điểm các yếu tố đã hiện thực: 13.5 điểm $\implies$ Đạt tối đa** | | **8.0 / 8.0** |
 | **Nâng cao** | **N01** | Trợ lý ảo LLM | Tích hợp Google Gemini AI chẩn đoán sức khỏe cây trồng và tư vấn canh tác | `gateway/llm_assistant.py` | **1.0** |
 | | **N07** | Tự deploy ThingsBoard local | File `docker-compose.yml` triển khai ThingsBoard Community Edition độc lập | `docker_thingsboard/docker-compose.yml` | **(1.0)** |
-| **Báo cáo** | - | Báo cáo chuẩn mẫu | 6 chương đầy đủ minh chứng, bảng tự đánh giá, trích dẫn $\ge 5$ tài liệu IEEE | `BaoCaoMau_BaiTapLon_IoT.docx` | **2.0 / 2.0** |
+| **Báo cáo** | - | Báo cáo chuẩn mẫu | 6 chương đầy đủ minh chứng, bảng tự đánh giá, trích dẫn $\ge 5$ tài liệu IEEE | `docs/report/BaoCao_KhungChuan_SmartGreenhouse.md` | **2.0 / 2.0** |
 | **TỔNG KẾT** | | | **ĐẠT ĐIỂM TỐI ĐA** | | **10.0 / 10.0** |
 
 ---
@@ -77,21 +78,23 @@ Assignment/
 │   └── tasmota_demo/                    # [T01] Script Berry & cấu hình Tasmota
 │       ├── dht20.be                     # Script Berry đọc DHT20 qua I2C
 │       └── tasmota_guide.md             # Hướng dẫn nạp và minh chứng T01
-├── gateway/                             # [T08, T09, T10, N01] IoT Gateway Python trên PC
-│   ├── config.yaml                      # Cấu hình Broker, Token, Serial
-│   ├── gateway_service.py               # Gateway core: Cầu nối Serial/MQTT với CoreIOT
+├── gateway/                             # [T08, T09, T10, T15, N01] IoT Gateway Python trên PC
+│   ├── config.example.yaml              # Mẫu cấu hình (copy thành config.yaml để điền Token)
+│   ├── config.yaml                      # Cấu hình thật (được bỏ qua trong .gitignore)
+│   ├── gateway_service.py               # Gateway core: Cầu nối Serial/MQTT + SQLite Offline Buffer
 │   ├── gateway_ai.py                    # [T09] Thuật toán AI dự báo trước 1 giờ
 │   ├── dashboard_app.py                 # [T10] Giao diện Streamlit giám sát & điều khiển local
 │   ├── llm_assistant.py                 # [N01] Trợ lý ảo AI Gemini chẩn đoán sức khỏe nhà kính
 │   └── requirements.txt                 # Danh sách thư viện Python
-├── coreiot/                             # [T11, T12, T13] Cấu hình CoreIOT
-│   ├── dashboard_greenhouse.json        # Template Dashboard CoreIOT
-│   └── rulechain_greenhouse.json        # File JSON import RuleChain xử lý tự động & Telegram
 ├── docker_thingsboard/                  # [N07] Tự triển khai ThingsBoard Local
 │   └── docker-compose.yml               # Docker Compose ThingsBoard CE & PostgreSQL
 ├── tests/                               # [Chương 4 Báo cáo] Đo đạc và thử nghiệm
-│   ├── benchmark_tinyml.py              # Đánh giá Accuracy (99%), Latency (2.2 us), F1-Score
-│   └── latency_tester.py                # Đo độ trễ truyền thông end-to-end
+│   ├── benchmark_tinyml.py              # Đánh giá Accuracy (99%), Latency, F1-Score
+│   └── latency_tester.py                # Đo độ trễ MQTT QoS=1 lên CoreIOT
+├── docs/                                # Tài liệu, hướng dẫn và khung báo cáo
+│   ├── assignment/                      # Đề bài & mẫu báo cáo gốc của giảng viên (.docx)
+│   ├── guides/                          # Tài liệu review đề tài & hướng dẫn phần cứng
+│   └── report/                          # Khung báo cáo chuẩn & thư mục ảnh minh chứng (images/)
 └── README.md                            # Tài liệu hướng dẫn toàn diện
 ```
 
@@ -134,7 +137,10 @@ pio device monitor -b 115200
    streamlit run gateway/dashboard_app.py
    ```
 
-### 4.5. Nhập Cấu hình lên CoreIOT (T11, T12, T13)
-1. Đăng nhập vào [app.coreiot.io](https://app.coreiot.io).
-2. Vào **Rule Chains** $\to$ Bấm **Import Rule Chain** $\to$ Chọn file `coreiot/rulechain_greenhouse.json` $\to$ Cấu hình Bot Token & Chat ID Telegram.
-3. Vào **Dashboards** $\to$ Bấm **Import Dashboard** $\to$ Chọn file `coreiot/dashboard_greenhouse.json`.
+### 4.5. Cấu hình CoreIOT (T11, T12, T13) & Đo đạc Chương 4
+1. Đăng nhập vào [app.coreiot.io](https://app.coreiot.io), thiết lập `Greenhouse_Profile`, `Smart Greenhouse RuleChain`, `Notification Center` và `Smart Greenhouse Monitor & Control` Dashboard.
+2. Chạy kịch bản đo đạc tự động phục vụ Chương 4 báo cáo:
+   ```bash
+   python tests/benchmark_tinyml.py
+   python tests/latency_tester.py
+   ```

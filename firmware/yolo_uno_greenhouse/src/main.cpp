@@ -9,14 +9,15 @@
 void serial_uplink_task(void *pvParameters) {
     while (1) {
         // Output clean JSON on USB CDC Serial for PC Gateway (T08)
-        Serial.printf("{\"temp\":%.2f,\"humidity\":%.2f,\"delta_temp\":%.2f,\"delta_humi\":%.2f,\"vpd\":%.3f,\"ai_state\":%d,\"ai_state_str\":\"%s\",\"ai_conf\":%.2f,\"infer_us\":%lu,\"fan\":%s,\"pump\":%s}\n",
+        Serial.printf("{\"temp\":%.2f,\"humidity\":%.2f,\"delta_temp\":%.2f,\"delta_humi\":%.2f,\"vpd\":%.3f,\"ai_state\":%d,\"ai_state_str\":\"%s\",\"ai_conf\":%.2f,\"infer_us\":%lu,\"fan\":%s,\"pump\":%s,\"light\":%s}\n",
                       glob_temperature, glob_humidity,
                       glob_delta_temp, glob_delta_humi,
                       glob_vpd,
                       glob_ai_state, getStateString((ClimateHealthState)glob_ai_state),
                       glob_ai_confidence, glob_inference_time_us,
                       glob_fan_state ? "true" : "false",
-                      glob_pump_state ? "true" : "false");
+                      glob_pump_state ? "true" : "false",
+                      glob_light_state ? "true" : "false");
         vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
@@ -29,6 +30,9 @@ void setup() {
     Serial.println("   Platform: ESP32-S3 YoloUNO | CoreIOT Cloud    ");
     Serial.printf("   Firmware Version: %s\n", FIRMWARE_VERSION);
     Serial.println("==================================================");
+
+    pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, glob_light_state ? HIGH : LOW);
 
     // Create FreeRTOS Multitasking Tasks
     xTaskCreatePinnedToCore(sensor_lcd_task,     "SensorLCD", 4096, NULL, 2, NULL, 1);
@@ -56,6 +60,14 @@ void loop() {
         } else if (cmd == "PUMP_OFF") {
             glob_pump_state = false;
             Serial.println("[CMD] Pump switched OFF");
+        } else if (cmd == "LED_ON") {
+            glob_light_state = true;
+            digitalWrite(LED_PIN, HIGH);
+            Serial.println("[CMD] Grow Light switched ON");
+        } else if (cmd == "LED_OFF") {
+            glob_light_state = false;
+            digitalWrite(LED_PIN, LOW);
+            Serial.println("[CMD] Grow Light switched OFF");
         }
     }
     vTaskDelay(pdMS_TO_TICKS(50));

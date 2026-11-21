@@ -1,7 +1,12 @@
 coreiot:
   broker: "app.coreiot.io"
   port: 1883
-  access_token: "mySecretToken2026Lab1"
+  access_token: "YOUR_COREIOT_ACCESS_TOKEN_HERE"
+
+gateway_sync:
+  enabled: false               # false: Direct Device Mode (T08) | true: Gateway Sync Mode (T15)
+  sub_device_name: "YoloUNO_Node1"
+  offline_buffer_db: "gateway_buffer.db"
 
 serial:
   port: "COM3"

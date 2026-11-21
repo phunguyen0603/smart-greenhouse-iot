@@ -61,7 +61,8 @@
 | Mã | Tính năng nâng cao | Điểm | Hiện thực | Mục báo cáo | Minh chứng |
 | :-: | :--- | :-: | :-: | :-: | :--- |
 | **N01** | Trợ lý ảo – LLM | 1.0 | Có | Mục 3.7 | `gateway/llm_assistant.py` |
-| **N07** | Tự triển khai (deploy) ThingsBoard trên máy local | 1.0 | Có *(Dự phòng)* | Mục 3.7 | `docker_thingsboard/docker-compose.yml` |
+| **N06** | Dashboard thiết kế riêng, có detect & record các sự kiện | 1.0 | Có | Mục 3.7 | `gateway/dashboard_app.py`, `gateway/greenhouse_db.py` |
+| **N07** | Tự triển khai (deploy) ThingsBoard trên máy local | 1.0 | Chưa chạy *(Cấu hình sẵn)* | Mục 3.7 | `docker_thingsboard/docker-compose.yml` |
 
 > **Tổng điểm tự đánh giá:** Công nghệ: **8.0 / 8.0** *(Tổng hiện thực 13.5đ, lấy trần 8.0)* – Nâng cao: **1.0 / 1.0** – Báo cáo: **2.0 / 2.0**.
 

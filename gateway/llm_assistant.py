@@ -50,11 +50,14 @@ CROP_PROFILES = {
 
 SYSTEM_PROMPT = """
 Bạn là một Chuyên Gia Nông Nghiệp Công Nghệ Cao (Agronomist & Smart Greenhouse Specialist).
-Nhiệm vụ của bạn là phân tích dữ liệu cảm biến thời gian thực, kết quả suy luận từ TinyML (Edge AI) và đưa ra:
-1. Đánh giá sinh lý cây trồng: trạng thái mở/đóng khí khổng, khả năng thoát hơi nước, dòng chảy dinh dưỡng Ca2+/K+ từ rễ lên ngọn.
-2. Nhận định rủi ro: nguy cơ sốc nhiệt/cháy chóp lá (khi VPD cao), hoặc nguy cơ đọng sương bùng phát nấm bệnh botrytis/phấn trắng (khi VPD thấp, ẩm bão hòa).
-3. Đề xuất hành động điều khiển cụ thể: Quạt thông gió (Bật/Tắt, thời gian), Máy bơm/Phun sương (Bật/Tắt, chu kỳ), Đèn quang hợp.
-4. Trả lời thỏa đáng và chuyên sâu câu hỏi cụ thể của người quản lý trang trại nếu có.
+
+QUY TẮC BẮT BUỘC VỀ THỨ TỰ TRÌNH BÀY:
+1. NẾU CÓ CÂU HỎI TỪ NGƯỜI QUẢN LÝ NHÀ KÍNH, BẠN BẮT BUỘC PHẢI ĐẶT MỤC: "### 💬 1. GIẢI ĐÁP TRỰC TIẾP CÂU HỎI" LÊN NGAY TRÊN CÙNG (trên tất cả các mục khác), giải đáp trực diện, rõ ràng, trúng đích trước tiên.
+2. Sau đó mới trình bày các mục phân tích khoa học tiếp theo:
+   ### 🌿 2. Đánh giá Sinh lý cây trồng & Chỉ số VPD
+   ### 📈 3. Nhận định Rủi ro & Dự báo Xu hướng 60 phút
+   ### ⚡ 4. Khuyến nghị Hành động điều khiển cụ thể (Quạt, Bơm/Phun sương, Đèn quang hợp)
+
 Phong cách trả lời: Khoa học, súc tích, chuyên nghiệp, dùng định dạng Markdown rõ ràng có biểu tượng trực quan.
 """
 
@@ -91,7 +94,23 @@ def generate_offline_analysis(temp, humi, vpd, ai_state_str, crop_name="General"
     sections.append(f"### 🌿 Báo Cáo Chẩn Đoán Nông Học (Chế độ Chuyên Gia Cục Bộ)")
     sections.append(f"**Đối tượng cây trồng:** `{c_name}` | **Đặc tính:** *{c_prof['description']}*\n")
 
-    # 1. Physiological Assessment
+    # ================= 1. TRẢ LỜI CÂU HỎI LÊN TRÊN CÙNG (NẾU CÓ) =================
+    if user_question and user_question.strip():
+        q_lower = user_question.lower()
+        if "sốc nhiệt" in q_lower or "cháy lá" in q_lower:
+            ans_lead = ("⚠️ **CẢNH BÁO SỐC NHIỆT:** Cây đang đối mặt với nguy cơ sốc nhiệt và cháy chóp lá do VPD cao (" + f"{vpd:.2f} kPa" + "). Hãy kích hoạt phun sương làm mát ngay lập tức!" if vpd > vpd_max else f"✅ **AN TOÀN:** Hiện tại VPD đang ở mức lý tưởng ({vpd:.2f} kPa). Tế bào khí khổng vẫn hoạt động bình thường, chưa có nguy cơ sốc nhiệt.")
+        elif "tưới" in q_lower or "bơm" in q_lower:
+            ans_lead = ("❌ **KHÔNG NÊN TƯỚI THÊM:** Độ ẩm không khí đang quá bão hòa (" + f"{humi:.1f}%" + "). Tưới thêm lúc này dễ gây úng rễ và tạo điều kiện cho nấm bệnh phát triển." if humi > 85 else f"💧 **CÓ THỂ TƯỚI NHẸ:** Nếu độ ẩm giá thể dưới 60%, bạn có thể tưới nhỏ giọt ngắn hạn bù ẩm, tốt nhất vào đầu buổi sáng.")
+        elif "quạt" in q_lower or "thông gió" in q_lower:
+            ans_lead = ("🌀 **CẦN BẬT QUẠT NGAY:** Bật quạt thông gió cưỡng bức để đẩy ẩm dư thừa ra ngoài và tránh đọng sương bề mặt lá." if (vpd < vpd_min or humi > 80) else "🍃 **CHƯA CẦN BẬT QUẠT:** Vi khí hậu đang lưu thông tự nhiên tốt, chưa cần kích hoạt quạt cưỡng bức.")
+        elif "nấm" in q_lower or "bệnh" in q_lower or "mốc" in q_lower:
+            ans_lead = ("⚠️ **NGUY CƠ NẤM BỆNH RẤT CAO:** Độ ẩm cao >85% kết hợp đọng giọt nước là môi trường thuận lợi cho nấm phấn trắng và Botrytis bùng phát. Cần bật quạt lưu thông không khí ngay!" if humi > 85 else "✅ **NGUY CƠ NẤM MỐC THẤP:** Bề mặt lá khô ráo, vi khí hậu thông thoáng, bào tử nấm khó nảy mầm.")
+        else:
+            ans_lead = f"Với điều kiện thực tế (Nhiệt độ {temp:.1f}°C, Độ ẩm {humi:.1f}%, VPD {vpd:.2f} kPa) của giống cây `{c_name}`, bạn nên duy trì ổn định vi khí hậu và áp dụng các khuyến nghị điều khiển thiết bị bên dưới."
+
+        sections.append(f"> 💬 **GIẢI ĐÁP TRỰC TIẾP CÂU HỎI CỦA BẠN:**\n> *\"{user_question.strip()}\"*\n>\n> 👉 {ans_lead}\n")
+
+    # 2. Physiological Assessment
     if vpd < vpd_min:
         rec_fan = True
         rec_pump = False
@@ -122,15 +141,15 @@ def generate_offline_analysis(temp, humi, vpd, ai_state_str, crop_name="General"
             f"- **Đánh giá Edge AI (TinyML):** Node biên ESP32-S3 chẩn đoán trạng thái: `{ai_state_str}`."
         )
 
-    sections.append(f"#### 1. Đánh giá sinh lý cây trồng\n{state_title}\n{body}\n")
+    sections.append(f"#### 2. Đánh giá sinh lý cây trồng & Chỉ số VPD\n{state_title}\n{body}\n")
 
-    # 2. Trend & Predictive Section
+    # 3. Trend & Predictive Section
     if trend_info:
         p_temp = trend_info.get("pred_temp_60m", temp)
         p_vpd = trend_info.get("pred_vpd_60m", vpd)
         shock = trend_info.get("thermal_shock_risk", False)
         dew = trend_info.get("dew_risk", False)
-        sections.append("#### 2. Dự báo xu hướng từ Gateway AI (Tầm nhìn 60 phút)")
+        sections.append("#### 3. Dự báo xu hướng từ Gateway AI (Tầm nhìn 60 phút)")
         sections.append(f"- Dự kiến sau 60 phút: Nhiệt độ `~{p_temp:.1f}°C`, VPD `~{p_vpd:.2f} kPa`.")
         if shock:
             sections.append("- 🚨 **Cảnh báo sớm:** Phát hiện tốc độ gia nhiệt nhanh, cần can thiệp trước 15 phút!")
@@ -140,8 +159,8 @@ def generate_offline_analysis(temp, humi, vpd, ai_state_str, crop_name="General"
             rec_fan = True
         sections.append("")
 
-    # 3. Actionable Recommendations
-    sections.append("#### 3. Khuyến nghị điều khiển thiết bị")
+    # 4. Actionable Recommendations
+    sections.append("#### 4. Khuyến nghị điều khiển thiết bị")
     if rec_fan and rec_pump:
         sections.append("- **Quạt đối lưu (FAN):** 🟢 **BẬT** (30 phút) để giải nhiệt tầng mái nhà kính.")
         sections.append("- **Hệ thống tưới / Phun sương (PUMP):** 🟢 **BẬT** (5-10 phút) dạng hạt mịn để bù ẩm và hạ nhiệt độ bề mặt lá.")
@@ -152,26 +171,6 @@ def generate_offline_analysis(temp, humi, vpd, ai_state_str, crop_name="General"
         sections.append("- **Quạt đối lưu (FAN):** 🔴 **TẮT** (Duy trì chế độ thông gió tự nhiên, tiết kiệm điện).")
         sections.append("- **Hệ thống tưới (PUMP):** 🔴 **TẮT** (Độ ẩm đất và không khí đang cân bằng).")
     sections.append(f"- **Đèn quang hợp (LIGHT):** 🟢 **BẬT** để hỗ trợ cây tiếp tục chu trình tổng hợp tinh bột.")
-
-    # 4. Custom User Question Answer
-    if user_question and user_question.strip():
-        q_lower = user_question.lower()
-        sections.append(f"\n#### 4. Phản hồi câu hỏi riêng: *\"{user_question.strip()}\"*")
-        if "sốc nhiệt" in q_lower or "cháy lá" in q_lower:
-            sections.append(f"-> **Chuyên gia giải đáp:** Hiện tại VPD đang ở mức `{vpd:.2f} kPa`. " +
-                           ("Cây đang có dấu hiệu sốc nhiệt! Hãy bật phun sương làm mát ngay." if vpd > vpd_max else "Cây chưa có nguy cơ sốc nhiệt, tế bào khí khổng vẫn hoạt động an toàn."))
-        elif "tưới" in q_lower or "bơm" in q_lower:
-            sections.append(f"-> **Chuyên gia giải đáp:** " +
-                           ("Không nên tưới thêm vào lúc này vì độ ẩm không khí đang quá cao, tưới thêm dễ gây úng rễ." if humi > 85 else f"Có thể kích hoạt tưới nhỏ giọt ngắn hạn nếu độ ẩm giá thể dưới 60%."))
-        elif "quạt" in q_lower or "thông gió" in q_lower:
-            sections.append(f"-> **Chuyên gia giải đáp:** " +
-                           ("Nên bật quạt thông gió ngay lập tức để đẩy ẩm dư thừa ra ngoài." if (vpd < vpd_min or humi > 80) else "Chưa cần bật quạt cưỡng bức, duy trì thông gió thụ động."))
-        elif "nấm" in q_lower or "bệnh" in q_lower or "mốc" in q_lower:
-            sections.append(f"-> **Chuyên gia giải đáp:** Đối với `{c_name}`, nguy cơ nấm bùng phát khi độ ẩm $>85\%$ kéo dài quá 4 giờ liên tục. " +
-                           ("Nguy cơ hiện tại rất cao, hãy kiểm tra mặt dưới lá và bật quạt lưu chuyển không khí!" if humi > 85 else "Hiện tại nguy cơ nấm mốc thấp, mặt lá khô ráo."))
-        else:
-            sections.append(f"-> **Chuyên gia giải đáp:** Với điều kiện hiện tại (T={temp:.1f}°C, RH={humi:.1f}%, VPD={vpd:.2f} kPa) cho giống cây `{c_name}`, "
-                           f"bạn nên ưu tiên duy trì trạng thái vi khí hậu ổn định theo các khuyến nghị điều khiển ở mục 3.")
 
     sections.append("\n*(Chế độ: Offline Agronomist Expert System — Tích hợp sẵn trong IoT Gateway)*")
     result_text = "\n".join(sections)
@@ -270,10 +269,19 @@ def analyze_greenhouse_state(temp, humi, vpd, ai_state_str, crop_name="General",
             prompt_lines.append(f"- CẢNH BÁO SỚM: Gateway AI phát hiện nguy cơ đọng sương trên lá.")
 
     if user_question and user_question.strip():
-        prompt_lines.append(f"\nCâu hỏi từ người quản lý nhà kính: \"{user_question.strip()}\"")
-        prompt_lines.append(f"Vui lòng trả lời câu hỏi này một cách cụ thể dựa trên số liệu thực tế ở trên.")
+        prompt_lines.append(f"\n⚠️ CÂU HỎI QUAN TRỌNG CỦA NGƯỜI QUẢN LÝ: \"{user_question.strip()}\"")
+        prompt_lines.append("YÊU CẦU BẮT BUỘC: Bạn PHẢI đưa mục '### 💬 1. GIẢI ĐÁP TRỰC TIẾP CÂU HỎI' lên vị trí ĐẦU TIÊN TRÊN CÙNG của câu trả lời, trả lời trọng tâm và dứt khoát trước khi phân tích các mục khác!")
 
-    prompt_lines.append("\nHãy phân tích: 1) Sinh lý cây trồng và VPD; 2) Nhận định rủi ro; 3) Khuyến nghị hành động điều khiển cụ thể (Quạt, Bơm/Phun sương, Đèn quang hợp); 4) Trả lời câu hỏi (nếu có).")
+    prompt_lines.append("\nCấu trúc bắt buộc cần trình bày:")
+    if user_question and user_question.strip():
+        prompt_lines.append("1) ### 💬 1. Giải đáp trực tiếp câu hỏi (BẮT BUỘC Ở TRÊN CÙNG)")
+        prompt_lines.append("2) ### 🌿 2. Đánh giá sinh lý cây trồng & Chỉ số VPD")
+        prompt_lines.append("3) ### 📈 3. Nhận định rủi ro & Dự báo xu hướng 60 phút")
+        prompt_lines.append("4) ### ⚡ 4. Khuyến nghị hành động điều khiển cụ thể (Quạt, Bơm/Phun sương, Đèn)")
+    else:
+        prompt_lines.append("1) ### 🌿 1. Đánh giá sinh lý cây trồng & Chỉ số VPD")
+        prompt_lines.append("2) ### 📈 2. Nhận định rủi ro & Dự báo xu hướng 60 phút")
+        prompt_lines.append("3) ### ⚡ 3. Khuyến nghị hành động điều khiển cụ thể (Quạt, Bơm/Phun sương, Đèn)")
     prompt_text = "\n".join(prompt_lines)
 
     # 1. Try google-genai SDK (v0.1.0+)

@@ -1,7 +1,19 @@
 {
-  "test_accuracy": 0.9950000047683716,
-  "test_loss": 0.012742763385176659,
-  "model_size_bytes": 3228,
+  "test_accuracy": 1.0,
+  "test_loss": 1.4056099644221831e-05,
+  "model_size_bytes": 3152,
+  "scaler_means": [
+    26.83345417022705,
+    73.96452909549078,
+    0.14639166736975312,
+    -0.022833332736045122
+  ],
+  "scaler_stds": [
+    5.442824358881354,
+    20.203078019149196,
+    0.738396107559185,
+    1.2782673721311888
+  ],
   "confusion_matrix": [
     [
       200,
@@ -14,16 +26,16 @@
       0
     ],
     [
-      3,
       0,
-      197
+      0,
+      200
     ]
   ],
   "classification_report": {
     "OPTIMAL": {
-      "precision": 0.9852216748768473,
+      "precision": 1.0,
       "recall": 1.0,
-      "f1-score": 0.9925558312655087,
+      "f1-score": 1.0,
       "support": 200.0
     },
     "HEAT_STRESS_DRY": {
@@ -34,21 +46,21 @@
     },
     "DISEASE_MOLD_RISK": {
       "precision": 1.0,
-      "recall": 0.985,
-      "f1-score": 0.9924433249370277,
+      "recall": 1.0,
+      "f1-score": 1.0,
       "support": 200.0
     },
-    "accuracy": 0.995,
+    "accuracy": 1.0,
     "macro avg": {
-      "precision": 0.9950738916256158,
-      "recall": 0.995,
-      "f1-score": 0.9949997187341788,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
       "support": 600.0
     },
     "weighted avg": {
-      "precision": 0.9950738916256158,
-      "recall": 0.995,
-      "f1-score": 0.9949997187341789,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
       "support": 600.0
     }
   }

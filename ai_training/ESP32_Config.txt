@@ -1,0 +1,22 @@
+=== THONG SO CHUAN HOA STANDARDSCALER CHO ESP32-S3 ===
+
+1. Tham so Mean va Std do StandardScaler cung cap:
+float temp_mean = 26.8335;
+float temp_std  = 5.4428;
+float humi_mean = 73.9645;
+float humi_std  = 20.2031;
+float delta_temp_mean = 0.1464;
+float delta_temp_std  = 0.7384;
+float delta_humi_mean = -0.0228;
+float delta_humi_std  = 1.2783;
+
+2. Cong thuc chuan hoa truoc khi Invoke():
+input->data.f[0] = (glob_temperature - temp_mean) / temp_std;
+input->data.f[1] = (glob_humidity    - humi_mean) / humi_std;
+input->data.f[2] = (glob_delta_temp  - delta_temp_mean) / delta_temp_std;
+input->data.f[3] = (glob_delta_humi  - delta_humi_mean) / delta_humi_std;
+
+3. Bang tra ma nhan:
+Index 0 => OPTIMAL
+Index 1 => HEAT_STRESS_DRY
+Index 2 => DISEASE_MOLD_RISK

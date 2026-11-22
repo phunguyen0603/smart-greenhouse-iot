@@ -294,7 +294,11 @@ def analyze_greenhouse_state(temp, humi, vpd, ai_state_str, crop_name="General",
     except Exception as e:
         # Graceful fallback to Expert Heuristic System if network or API call fails
         fb = generate_offline_analysis(temp, humi, vpd, ai_state_str, c_name, trend_info, user_question)
-        note = f"\n\n> *[Ghi chú hệ thống: Không thể kết nối tới Google Gemini API ({str(e)[:50]}...). Hệ thống đã tự động kích hoạt bộ phân tích chuyên gia cục bộ Offline Heuristic System].*"
+        err_msg = str(e)
+        tip = ""
+        if "403" in err_msg or "Forbidden" in err_msg:
+            tip = " [Nguyên nhân: Google chặn Free Tier đối với tài khoản trường/tổ chức (Google Workspace/Cloud Org). Khắc phục: Dùng tài khoản Gmail cá nhân (@gmail.com) đăng nhập aistudio.google.com để tạo API key miễn phí 100%]."
+        note = f"\n\n> *[Ghi chú hệ thống: Không thể kết nối tới Google Gemini API ({err_msg[:60]}...).{tip} Hệ thống đã tự động kích hoạt bộ phân tích chuyên gia cục bộ Offline Heuristic System].*"
         return AnalysisResult(str(fb) + note, fan=fb.fan, pump=fb.pump, light=fb.light, is_offline=True, model="Expert Heuristic (Fallback)")
 
 if __name__ == "__main__":

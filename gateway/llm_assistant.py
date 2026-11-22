@@ -180,38 +180,61 @@ def generate_offline_analysis(temp, humi, vpd, ai_state_str, crop_name="General"
 def _call_gemini_rest(api_key, prompt, system_instruction):
     """
     Direct HTTP REST API call to Google Gemini endpoint.
-    Eliminates dependencies on specific SDK packaging.
+    Dynamically tries available models in order of latency and availability.
     """
     import urllib.request
     import urllib.error
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-    payload = {
-        "contents": [
-            {
-                "parts": [{"text": prompt}]
+    candidate_models = [
+        "gemini-flash-lite-latest",
+        "gemini-flash-latest",
+        "gemini-2.5-flash",
+        "gemini-1.5-flash"
+    ]
+
+    last_error = None
+    for model_name in candidate_models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+        payload = {
+            "contents": [
+                {
+                    "parts": [{"text": prompt}]
+                }
+            ],
+            "systemInstruction": {
+                "parts": [{"text": system_instruction}]
+            },
+            "generationConfig": {
+                "temperature": 0.4,
+                "maxOutputTokens": 1024
             }
-        ],
-        "systemInstruction": {
-            "parts": [{"text": system_instruction}]
-        },
-        "generationConfig": {
-            "temperature": 0.4,
-            "maxOutputTokens": 1024
         }
-    }
 
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST"
-    )
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
 
-    with urllib.request.urlopen(req, timeout=12) as response:
-        res_data = json.loads(response.read().decode("utf-8"))
-        text = res_data["candidates"][0]["content"]["parts"][0]["text"]
-        return text
+        try:
+            with urllib.request.urlopen(req, timeout=12) as response:
+                res_data = json.loads(response.read().decode("utf-8"))
+                text = res_data["candidates"][0]["content"]["parts"][0]["text"]
+                return text, model_name
+        except urllib.error.HTTPError as e:
+            last_error = e
+            # If 403 or 401, trying other models won't help (billing or auth issue)
+            if e.code in [401, 403]:
+                raise e
+            continue
+        except Exception as e:
+            last_error = e
+            continue
+
+    if last_error:
+        raise last_error
+    raise RuntimeError("Tất cả các model Gemini đều không khả dụng.")
 
 def analyze_greenhouse_state(temp, humi, vpd, ai_state_str, crop_name="General", api_key=None,
                              trend_info=None, user_question=None):
@@ -286,11 +309,11 @@ def analyze_greenhouse_state(temp, humi, vpd, ai_state_str, crop_name="General",
 
     # 3. Try Direct REST API call
     try:
-        raw_text = _call_gemini_rest(api_key, prompt_text, SYSTEM_PROMPT)
+        raw_text, used_model = _call_gemini_rest(api_key, prompt_text, SYSTEM_PROMPT)
         rec_fan = "quạt" in raw_text.lower() and ("bật" in raw_text.lower() or "on" in raw_text.lower())
         rec_pump = ("bơm" in raw_text.lower() or "phun sương" in raw_text.lower()) and ("bật" in raw_text.lower() or "on" in raw_text.lower())
-        return AnalysisResult(f"### 🤖 Tư Vấn Chuyên Gia Nông Học (Google Gemini AI - REST)\n\n" + raw_text,
-                              fan=rec_fan, pump=rec_pump, light=True, is_offline=False, model="gemini-1.5-flash-rest")
+        return AnalysisResult(f"### 🤖 Tư Vấn Chuyên Gia Nông Học (Google Gemini AI: `{used_model}`)\n\n" + raw_text,
+                              fan=rec_fan, pump=rec_pump, light=True, is_offline=False, model=used_model)
     except Exception as e:
         # Graceful fallback to Expert Heuristic System if network or API call fails
         fb = generate_offline_analysis(temp, humi, vpd, ai_state_str, c_name, trend_info, user_question)

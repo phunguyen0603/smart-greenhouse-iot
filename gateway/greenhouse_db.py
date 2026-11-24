@@ -329,6 +329,10 @@ class GreenhouseStore:
         with self._lock, self._connect() as conn:
             conn.execute("UPDATE topology_nodes SET master_id = ? WHERE node_id = ?", (new_master_id, node_id))
 
+    def delete_node(self, node_id):
+        with self._lock, self._connect() as conn:
+            conn.execute("DELETE FROM topology_nodes WHERE node_id = ?", (node_id.strip(),))
+
     def update_node_actuators(self, node_id, fan=None, pump=None, light=None):
         with self._lock, self._connect() as conn:
             if fan is not None:

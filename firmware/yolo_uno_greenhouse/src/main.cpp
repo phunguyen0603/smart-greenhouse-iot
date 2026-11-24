@@ -9,7 +9,7 @@
 void serial_uplink_task(void *pvParameters) {
     while (1) {
         // Output clean JSON on USB CDC Serial for PC Gateway (T08)
-        Serial.printf("{\"temp\":%.2f,\"humidity\":%.2f,\"delta_temp\":%.2f,\"delta_humi\":%.2f,\"vpd\":%.3f,\"ai_state\":%d,\"ai_state_str\":\"%s\",\"ai_conf\":%.2f,\"infer_us\":%lu,\"fan\":%s,\"pump\":%s,\"light\":%s}\n",
+        Serial.printf("{\"temp\":%.2f,\"humidity\":%.2f,\"delta_temp\":%.2f,\"delta_humi\":%.2f,\"vpd\":%.3f,\"ai_state\":%d,\"ai_state_str\":\"%s\",\"ai_conf\":%.2f,\"infer_us\":%lu,\"fan\":%s,\"pump\":%s,\"light\":%s,\"slaves\":%d}\n",
                       glob_temperature, glob_humidity,
                       glob_delta_temp, glob_delta_humi,
                       glob_vpd,
@@ -17,7 +17,8 @@ void serial_uplink_task(void *pvParameters) {
                       glob_ai_confidence, glob_inference_time_us,
                       glob_fan_state ? "true" : "false",
                       glob_pump_state ? "true" : "false",
-                      glob_light_state ? "true" : "false");
+                      glob_light_state ? "true" : "false",
+                      glob_slave_count);
         vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
@@ -34,13 +35,13 @@ void setup() {
     pinMode(LED_PIN, OUTPUT);
     digitalWrite(LED_PIN, glob_light_state ? HIGH : LOW);
 
-    // Create FreeRTOS Multitasking Tasks
+    // Create FreeRTOS Multitasking Tasks (Stack sizes in bytes for ESP32 FreeRTOS)
     xTaskCreatePinnedToCore(sensor_lcd_task,     "SensorLCD", 4096, NULL, 2, NULL, 1);
     xTaskCreatePinnedToCore(tinyml_task,         "TinyML",    8192, NULL, 1, NULL, 1);
     xTaskCreatePinnedToCore(webserver_task,      "WebServer", 4096, NULL, 1, NULL, 0);
-    xTaskCreatePinnedToCore(espnow_task,         "ESP-NOW",   2048, NULL, 1, NULL, 0);
+    xTaskCreatePinnedToCore(espnow_task,         "ESP-NOW",   4096, NULL, 1, NULL, 0);
     xTaskCreatePinnedToCore(ota_task,            "OTA",       4096, NULL, 1, NULL, 0);
-    xTaskCreatePinnedToCore(serial_uplink_task,  "SerialUp",  2048, NULL, 1, NULL, 0);
+    xTaskCreatePinnedToCore(serial_uplink_task,  "SerialUp",  4096, NULL, 1, NULL, 0);
 }
 
 void loop() {

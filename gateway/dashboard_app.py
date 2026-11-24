@@ -328,6 +328,24 @@ with tab3:
                     st.success(f"Đã thêm {new_gid}!")
                     st.rerun()
 
+    st.divider()
+    with st.expander("🗑️ Xóa Sub-Node khỏi hệ thống (Local Gateway)", expanded=False):
+        node_choices = [n["node_id"] for n in store.get_nodes()]
+        if node_choices:
+            col_del1, col_del2 = st.columns([3, 1])
+            with col_del1:
+                del_nid = st.selectbox("Chọn Sub-Node cần xóa", node_choices, key="del_node_select")
+            with col_del2:
+                st.write("")
+                st.write("")
+                if st.button("🗑️ Xác nhận Xóa Node", type="primary", key="btn_del_node"):
+                    store.delete_node(del_nid)
+                    store.record_event(del_nid, "SYSTEM", "NODE_DELETED", "WARNING", f"Đã xóa Sub-Node '{del_nid}' khỏi hệ thống.")
+                    st.success(f"Đã xóa thành công Node {del_nid}!")
+                    st.rerun()
+        else:
+            st.info("Chưa có Sub-Node nào trong cơ sở dữ liệu.")
+
 
 # ----------------- TAB 4: PREDICTIVE AI (T09) & LLM ASSISTANT (N01) -----------------
 with tab4:

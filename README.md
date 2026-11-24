@@ -52,7 +52,7 @@ Assignment/
 │   ├── model.h                          # Mảng byte mô hình C
 │   └── training_metrics.json            # Số liệu đánh giá cho Báo cáo
 ├── firmware/
-│   ├── yolo_uno_greenhouse/             # [T04, T06, T07, T14] Firmware PlatformIO cho ESP32-S3
+│   ├── yolo_uno_greenhouse/             # [T04, T06, T07, T14] Firmware Master Node cho ESP32-S3
 │   │   ├── platformio.ini               # Cấu hình PlatformIO board yolo_uno
 │   │   ├── boards/yolo_uno.json         # Định nghĩa phần cứng board YoloUNO
 │   │   ├── lib/                         # Driver I2C kế thừa từ Support Files LAB 3
@@ -63,8 +63,8 @@ Assignment/
 │   │   │   ├── greenhouse_profile.h     # Hồ sơ vi khí hậu cây trồng/nấm
 │   │   │   ├── sensor_lcd_task.h        # Task đọc DHT20 (lọc 2 tầng) & LCD 16x2
 │   │   │   ├── tinyml_task.h            # Task TFLite Micro suy luận AI
-│   │   │   ├── webserver_task.h         # Task Webserver local tại chỗ (T07)
-│   │   │   ├── espnow_transport.h       # Giao tiếp ESP-NOW (T06)
+│   │   │   ├── webserver_task.h         # Task Webserver local tại chỗ (T07) & Captive Portal
+│   │   │   ├── espnow_transport.h       # Giao tiếp ESP-NOW & Dynamic Pairing (T06)
 │   │   │   ├── ota_service.h            # Cập nhật OTA từ xa (T14)
 │   │   │   └── model.h                  # Header mô hình TinyML
 │   │   └── src/
@@ -75,6 +75,14 @@ Assignment/
 │   │       ├── webserver_task.cpp
 │   │       ├── espnow_transport.cpp
 │   │       └── ota_service.cpp
+│   ├── slave_actuator_node/             # [T06] Firmware Slave Actuator Node (Node con rơ-le)
+│   │   ├── platformio.ini               # Hỗ trợ cả ESP32 DevKit và YoloUNO
+│   │   ├── include/
+│   │   │   ├── slave_config.h           # Cấu hình chân Relay, Nút bấm & Failsafe
+│   │   │   └── espnow_protocol.h        # Giao thức gói tin tương thích Master
+│   │   ├── src/
+│   │   │   └── main.cpp                 # Nhận lệnh ESP-NOW, Dynamic Pairing NVS, Failsafe
+│   │   └── README.md                    # Hướng dẫn đấu nối & ghép đôi
 │   └── tasmota_demo/                    # [T01] Script Berry & cấu hình Tasmota
 │       ├── dht20.be                     # Script Berry đọc DHT20 qua I2C
 │       └── tasmota_guide.md             # Hướng dẫn nạp và minh chứng T01
@@ -124,9 +132,28 @@ pio run -e yolo_uno -t upload
 pio device monitor -b 115200
 ```
 - Khi khởi động, màn hình LCD 16x2 sẽ hiển thị nhiệt độ, độ ẩm và nhãn chẩn đoán TinyML (`OPT`, `DRY`, `MLD`).
-- ESP32 tự động phát Wi-Fi Access Point `SmartGreenhouse-AP` (mật khẩu `12345678`). Truy cập `192.168.4.1` trên điện thoại/laptop để vào Webserver cục bộ.
+- ESP32 tự động phát Wi-Fi Access Point **`SmartGreenhouse-AP`** (mạng mở, không mật khẩu). Tích hợp **Captive Portal** (DNS Port 53) tự động mở Web Dashboard ngay khi thiết bị kết nối Wi-Fi (hoặc truy cập `http://192.168.4.1`).
 
-### 4.4. Khởi chạy IoT Gateway & Dashboard Local (T08, T09, T10)
+### 4.4. Biên dịch và nạp Firmware cho Slave Actuator Node (T06)
+Chi tiết tại [firmware/slave_actuator_node/README.md](firmware/slave_actuator_node/README.md):
+```bash
+# Nạp cho board ESP32 thường (DevKit/NodeMCU):
+pio run -d ./firmware/slave_actuator_node -e esp32dev -t upload
+
+# Nạp cho board YoloUNO (ESP32-S3):
+pio run -d ./firmware/slave_actuator_node -e yolo_uno -t upload
+```
+* **Quy trình kết nạp an toàn**:
+  1. Khi Node con cắm điện, nó phát yêu cầu `MSG_PAIR_REQ`.
+  2. Trên Web Master, tab **`⚙️ CÀI ĐẶT & KẾT NẠP`** xuất hiện thông báo chờ duyệt.
+  3. Bấm **`[✅ CHẤP NHẬN KẾT NẠP]`** để lưu vĩnh viễn vào Flash (NVS) của Master.
+  4. Node con sẽ xuất hiện trên **`📊 MÀN HÌNH CHÍNH`** với đầy đủ dữ liệu độ ẩm đất và các nút bật/tắt Quạt/Bơm độc lập.
+* **Cơ chế Heartbeat & Giám sát sống/chết (Timeout 30s)**:
+  * Node con gửi Heartbeat mỗi 3 giây một lần.
+  * Web hiển thị chấm xanh nhấp nháy: `🟢 ĐANG HOẠT ĐỘNG (X giây trước)`.
+  * Nếu Node con mất liên lạc quá **30 giây**, Web UI tự động chuyển sang `🔴 MẤT LIÊN LẠC` và khóa nút điều khiển để bảo vệ an toàn.
+
+### 4.5. Khởi chạy IoT Gateway & Dashboard Local (T08, T09, T10)
 1. Cấu hình access token trong file `gateway/config.yaml`.
 2. Khởi chạy Gateway MQTT Bridge:
    ```bash
@@ -137,10 +164,16 @@ pio device monitor -b 115200
    streamlit run gateway/dashboard_app.py
    ```
 
-### 4.5. Cấu hình CoreIOT (T11, T12, T13) & Đo đạc Chương 4
+### 4.6. Cấu hình CoreIOT (T11, T12, T13) & Đo đạc Chương 4
 1. Đăng nhập vào [app.coreiot.io](https://app.coreiot.io), thiết lập `Greenhouse_Profile`, `Smart Greenhouse RuleChain`, `Notification Center` và `Smart Greenhouse Monitor & Control` Dashboard.
 2. Chạy kịch bản đo đạc tự động phục vụ Chương 4 báo cáo:
    ```bash
    python tests/benchmark_tinyml.py
    python tests/latency_tester.py
    ```
+
+---
+
+## 5. Tài liệu Bàn Giao Kỹ Thuật (Handover Guide)
+Dành cho thành viên nhóm hoặc kỹ sư tiếp nhận dự án:  
+👉 Xem tài liệu chi tiết: **[HANDOVER.md](HANDOVER.md)** (Kiến trúc FreeRTOS, Sơ đồ chân Pinout, Xử lý lỗi nạp/Serial, Cấu trúc bản tin ESP-NOW nhị phân).

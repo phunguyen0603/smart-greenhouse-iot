@@ -343,18 +343,18 @@ with tab4:
 
     st.divider()
     st.subheader(f"Agricultural LLM Expert Assistant (N01) — {selected_crop}")
-    st.caption("Trợ lý chuyên gia nông học tích hợp mô hình Google Gemini AI & Bộ phân tích sinh lý vi khí hậu nhà kính.")
+    st.caption("Trợ lý chuyên gia nông học tích hợp mô hình Google Gemini AI trực tuyến.")
 
     c_key, c_mode = st.columns([2.5, 1.5])
     api_key_input = c_key.text_input(
         "Gemini API Key:",
         value=os.environ.get("GEMINI_API_KEY", ""),
-        placeholder="AIzaSy... (để trống để dùng chế độ Offline Expert Heuristic)",
+        placeholder="AQ.Ab8RN6... hoặc AIzaSy...",
         type="password"
     )
     c_mode.markdown(
-        "**Chế độ hoạt động:**<br>" + 
-        ("🟢 Google Gemini Online" if api_key_input else "🟡 Offline Expert System"),
+        "**Trạng thái AI:**<br>" + 
+        ("🟢 Sẵn sàng gọi Google Gemini" if api_key_input else "🔴 Cần nhập API Key"),
         unsafe_allow_html=True
     )
 

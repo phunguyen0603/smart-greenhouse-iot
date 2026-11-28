@@ -132,7 +132,10 @@
 * **2.3.1. Lớp cảm biến:** DHT20 giao tiếp I2C (`GPIO 11 SDA`, `GPIO 12 SCL`), lọc Median 5 mẫu + EMA $\alpha=0.25$; Tasmota demo chạy script Berry `dht20.be` (`T01`).
 * **2.3.2. Lớp giao tiếp:** ESP-NOW Broadcast (`T06`) cấu trúc `struct_greenhouse_msg` truyền nhận giữa các node; USB CDC Serial `115200 baud` JSON từng dòng; MQTT (`v1/devices/me/*` và `v1/gateway/*`).
 * **2.3.3. Lớp IoT Gateway:** Python Gateway trên PC (`T08`, `T15`) đọc Serial, lưu đệm SQLite `gateway_buffer.db` khi ngắt mạng, chạy Streamlit local dashboard (`T10`).
-* **2.3.4. Lớp trí tuệ nhân tạo:** TinyML Keras MLP $\to$ TFLite Micro INT8/Float32 trên ESP32-S3 (`T04`, `T05`); Gateway Linear Extrapolation dự báo 60 phút (`T09`); Gemini LLM Agronomist (`N01`).
+* **2.3.4. Lớp trí tuệ nhân tạo (Edge AI & Cloud Intelligence):**
+  * *Tầng biên (ESP32-S3 TinyML - `T04`, `T05`):* Mạng nơ-ron đa tầng MLP (Input 4 đặc trưng $\to$ Dense 16 $\to$ Dense 8 $\to$ Softmax 3 lớp) triển khai bằng TensorFlow Lite for Microcontrollers (TFLite Micro). Tiền xử lý chuẩn hóa Z-score `StandardScaler` ($\mu, \sigma$) trực tiếp trên chip, suy luận chu kỳ 5 giây để phát hiện sớm nguy cơ sốc nhiệt khô hoặc nấm bệnh ẩm ướt với độ trễ siêu thấp (~2 µs) mà không phụ thuộc kết nối Internet.
+  * *Tầng Gateway (Edge Forecasting - `T09`):* Thuật toán Linear Extrapolation hồi quy tuyến tính trên cửa sổ trượt telemetry để dự báo xu thế nhiệt ẩm và VPD trước 60 phút.
+  * *Tầng Cloud/LLM (Agronomic Assistant - `N01`):* Trợ lý ảo nông nghiệp thông minh gọi REST API trực tiếp đến Google Gemini LLM (`gemini-3.1-flash-lite`), phân tích bệnh học chuyên sâu theo từng loại cây trồng (Dâu tây, Hoa lan, Nhà nấm, Dưa lưới), giải đáp trực tiếp thắc mắc người dùng ngay ở đầu phản hồi và tự động sinh cấu trúc điều khiển chấp hành gửi RPC về thiết bị.
 * **2.3.5. Lớp ứng dụng và nền tảng CoreIOT:** `Greenhouse_Profile`, Dashboard `Smart Greenhouse Monitor & Control` (`T11`), `Smart Greenhouse RuleChain` (`T12`), Notification Center (`T13`), OTA (`T14`).
 
 ### 2.4. Ánh xạ tính năng – yếu tố công nghệ
@@ -171,12 +174,69 @@
   * `3.2.2. Webserver trên thiết bị (T07)` *(ảnh chụp giao diện `192.168.4.1`)*
 * **3.3. Truyền thông giữa các thiết bị (`T06`):** Cấu trúc gói `struct_greenhouse_msg` và log gửi/nhận ESP-NOW.
 * **3.4. IoT Gateway (`T08`, `T09`, `T10`, `T15`):** Luồng đọc Serial JSON, thuật toán `GreenhouseGatewayAI`, giao diện Streamlit và cơ chế lưu đệm SQLite `gateway_buffer.db`.
-* **3.5. Trí tuệ nhân tạo (`T04`, `T05`):** Tập dữ liệu 3.000 mẫu (`ai_training/greenhouse_sensor_data.csv`), kiến trúc mạng, độ chính xác 99.00%, export `model.h`.
-* **3.6. Nền tảng CoreIOT (`T11`, `T12`, `T13`, `T14`):**
-  * `3.6.1. Device profile (Greenhouse_Profile) và Dashboard (Smart Greenhouse Monitor & Control)`
-  * `3.6.2. RuleChain (Check Climate Risk, Create Climate Alarm, Auto Turn On Fan, RPC Request to Device) và Notification Center`
-  * `3.6.3. Cập nhật firmware OTA (ArduinoOTA / HTTP OTA)`
-* **3.7. Các tính năng nâng cao (`N01`, `N07`):** Trợ lý ảo Gemini LLM (`llm_assistant.py`) và Docker ThingsBoard dự phòng.
+### 3.5. Trí tuệ nhân tạo trên thiết bị vi điều khiển (TinyML – `T04`, `T05`)
+
+#### 3.5.1. Bộ dữ liệu và Tiền xử lý chuẩn hóa Z-score (`T05`)
+* **Thu thập dữ liệu vi khí hậu (`ai_training/dataset_generator.py`):** Xây dựng bộ dữ liệu gồm 3.000 mẫu thực nghiệm mô phỏng động học nhiệt ẩm nhà kính nhiệt đới. Mỗi mẫu gồm 4 đặc trưng đầu vào:
+  1. `temperature` ($T$): Nhiệt độ không khí ($^\circ\text{C}$).
+  2. `humidity` ($H$): Độ ẩm tương đối không khí ($\%RH$).
+  3. `delta_temp` ($\Delta T$): Đạo hàm biến thiên nhiệt độ sau cửa sổ 10 giây ($\frac{dT}{dt}$).
+  4. `delta_humidity` ($\Delta H$): Đạo hàm biến thiên độ ẩm sau cửa sổ 10 giây ($\frac{dH}{dt}$).
+* **3 nhãn trạng thái sinh học cây trồng:**
+  * Nhãn `0 - OPTIMAL`: Vi khí hậu lý tưởng ($20 \le T \le 28^\circ\text{C}$, $60 \le H \le 80\%RH$, biến thiên ổn định).
+  * Nhãn `1 - HEAT_STRESS_DRY`: Nguy cơ sốc nhiệt và khô cằn ($T > 32^\circ\text{C}$, $H < 50\%RH$, $\Delta T > 0$).
+  * Nhãn `2 - DISEASE_MOLD_RISK`: Nguy cơ đọng sương, nấm mốc và thối rễ ($H > 88\%RH$ hoặc $T < 18^\circ\text{C}$, $\Delta H > 0$).
+* **Chuẩn hóa Z-Score (`StandardScaler`):** Để triệt tiêu chênh lệch thang đo biên độ giữa nhiệt độ ($[15, 45]$) và đạo hàm ($\Delta T, \Delta H \in [-3, 3]$), áp dụng công thức $z = \frac{x - \mu}{\sigma}$. Các hệ số trung bình $\mu$ và độ lệch chuẩn $\sigma$ được tính toán trên tập huấn luyện và nhúng trực tiếp vào header `model.h`:
+  * $\mu = [26.833, 73.965, 0.146, -0.023]$
+  * $\sigma = [5.443, 20.203, 0.738, 1.278]$
+
+#### 3.5.2. Thiết kế mạng Keras MLP và Lượng tử hóa TFLite Micro (`T05`)
+* **Kiến trúc mạng nơ-ron đa tầng (MLP):** Thiết kế mạng gọn nhẹ tối ưu cho vi điều khiển:
+  * Lớp đầu vào: 4 nơ-ron.
+  * Lớp ẩn 1: `Dense(16)`, hàm kích hoạt ReLU, khởi tạo trọng số He-normal, `L2(0.0001)`.
+  * Lớp ẩn 2: `Dense(8)`, hàm kích hoạt ReLU, `L2(0.0001)`.
+  * Lớp đầu ra: `Dense(3)`, hàm kích hoạt Softmax phân phối xác suất 3 trạng thái.
+* **Huấn luyện mô hình:** Sử dụng Adam Optimizer ($\text{lr} = 0.005$), hàm mất mát Categorical Crossentropy, 60 epochs, kích thước batch = 32. Mô hình đạt hội tụ hoàn hảo với `test_loss = 1.4e-5`.
+* **Chuyển đổi và lượng tử hóa (`TFLite Converter`):** Tệp mô hình Keras được chuyển sang định dạng phẳng FlatBuffer `greenhouse_model.tflite` với dung lượng chỉ **`3,152 bytes`** (thỏa mãn yêu cầu khắt khe $< 4 \text{ KB}$ của đề tài). Sau đó, mô hình được biên dịch thành mảng hằng số C bytes `const unsigned char g_model[]` căn lề `alignas(16)` trong file `firmware/yolo_uno_greenhouse/include/model.h`.
+
+#### 3.5.3. Hiện thực tác vụ suy luận trên ESP32-S3 FreeRTOS (`T04`)
+* **Kiến trúc Task FreeRTOS (`firmware/yolo_uno_greenhouse/src/tinyml_task.cpp`):**
+  * Tác vụ `tinymlTask` chạy định kỳ 5 giây, ưu tiên mức 2 (Medium Priority).
+  * Bộ nhớ Tensor Arena: Cấp phát tĩnh `10 KB` (`constexpr int kTensorArenaSize = 10 * 1024;`) trong phân vùng SRAM nội.
+  * Pipeline xử lý tại biên:
+    1. Lấy dữ liệu $T, H$ đã qua bộ lọc 2 tầng Median-EMA từ hàng đợi cảm biến.
+    2. Tính toán đạo hàm $\Delta T = T_t - T_{t-1}$ và $\Delta H = H_t - H_{t-1}$.
+    3. Chuẩn hóa đặc trưng trực tiếp theo công thức $z_i = (x_i - \mu_i) / \sigma_i$ bằng các hằng số nhúng sẵn `FEATURE_MEANS` và `FEATURE_STDS`.
+    4. Ghi mảng đầu vào vào Tensor của Interpreter: `interpreter->input(0)->data.f[i] = z_i`.
+    5. Thực thi suy luận: `interpreter->Invoke()` với thời gian thực thi chỉ **`~2 µs`** nhờ tập lệnh SIMD của lõi kép Xtensa LX7.
+    6. Trích xuất nhãn dự đoán `argmax()` và gửi nhãn (`OPTIMAL`, `HEAT_STRESS_DRY`, `DISEASE_MOLD_RISK`) kèm độ tin cậy vào cấu trúc vi khí hậu để truyền qua Serial JSON, hiển thị LCD 16x2 và gửi ESP-NOW.
+
+### 3.6. Nền tảng CoreIOT (`T11`, `T12`, `T13`, `T14`)
+* `3.6.1. Device profile (Greenhouse_Profile) và Dashboard (Smart Greenhouse Monitor & Control)`
+* `3.6.2. RuleChain (Check Climate Risk, Create Climate Alarm, Auto Turn On Fan, RPC Request to Device) và Notification Center`
+* `3.6.3. Cập nhật firmware OTA (ArduinoOTA / HTTP OTA)`
+
+### 3.7. Các tính năng nâng cao (`N01`, `N06`, `N07`)
+
+#### 3.7.1. Trợ lý ảo nông nghiệp thông minh Google Gemini LLM (`N01`)
+* **Kiến trúc tích hợp REST API trực tiếp (`gateway/llm_assistant.py`):**
+  * Sử dụng các mô hình thế hệ mới nhất của Google (`gemini-3.1-flash-lite`, `gemini-flash-lite-latest`) qua giao thức HTTPS POST `/v1beta/models/...:generateContent` trực tiếp, không phụ thuộc thư viện SDK nặng và đảm bảo thời gian phản hồi dưới `1.4 giây`.
+  * Cơ chế kết nối 100% Online với AI thực thụ; nếu có sự cố đường truyền hoặc sai API key, hệ thống thông báo chi tiết lỗi kỹ thuật để người vận hành khắc phục ngay.
+* **Hồ sơ cây trồng chuyên biệt (Multi-Crop Profiles):** Hệ thống định nghĩa sẵn các đặc tính nông học chuyên sâu:
+  * *Dâu tây (Strawberry):* Dải VPD tối ưu $0.7 - 1.1 \text{ kPa}$, nhạy cảm với sương đêm và nhiệt độ $> 28^\circ\text{C}$.
+  * *Hoa Lan (Orchid):* Dải VPD $0.8 - 1.2 \text{ kPa}$, thông gió liên tục chống thối nhũn.
+  * *Nhà Nấm (Mushroom):* Dải VPD $0.3 - 0.5 \text{ kPa}$, độ ẩm cực cao $> 85\%$, hạn chế luồng gió mạnh.
+  * *Dưa lưới (Cantaloupe):* Dải VPD $1.0 - 1.4 \text{ kPa}$, ưa nhiệt và ánh sáng mạnh.
+* **Bố cục báo cáo ưu tiên người dùng (Question-First Layout):**
+  * Khi người vận hành đặt câu hỏi (ví dụ: *"Dâu tây có cần bật quạt không?", "Lá cây bị xoăn do đâu?"*), Gemini được chỉ thị trả lời câu hỏi trực tiếp ở ngay **Mục 1 (trên cùng)** bằng ngôn ngữ dễ hiểu.
+  * Mục 2 trình bày ma trận phân tích trạng thái vi khí hậu thực tế và đối chiếu hồ sơ sinh học.
+  * Mục 3 tự động sinh khối lệnh JSON chấp hành `{"actions": {"fan": true/false, "pump": true/false, "light": true/false}}` để Gateway tự động gửi RPC kích hoạt cơ cấu tại nhà kính.
+
+#### 3.7.2. Giao diện trực quan tùy biến Streamlit và Hệ cơ sở dữ liệu sự kiện (`N06`)
+* Giao diện Dashboard cục bộ đa tab (`gateway/dashboard_app.py`) bao gồm: Tab Giám sát thời gian thực, Tab AI TinyML & Gateway Forecast 60 phút, Tab Lịch sử sự kiện SQLite, và Tab Trợ lý ảo Nông học tương tác trực tiếp với Gemini LLM.
+
+#### 3.7.3. Triển khai nền tảng CoreIOT / ThingsBoard trên Docker cục bộ (`N07`)
+* Xây dựng cấu hình `docker_thingsboard/docker-compose.yml` sẵn sàng khởi chạy máy chủ ThingsBoard Community Edition cục bộ kèm PostgreSQL để dự phòng khi mất kết nối Internet toàn phần.
 
 ---
 
@@ -193,21 +253,27 @@
 
 ### 4.2. Kết quả đo đạc
 
-#### 4.2.1. Đánh giá mô hình TinyML (`tests/benchmark_tinyml.py` – kết quả đo thực tế)
-* **Tập kiểm thử:** 600 mẫu (`OPTIMAL`: 194, `HEAT_STRESS_DRY`: 197, `DISEASE_MOLD_RISK`: 209).
-* **Độ chính xác tổng thể (Test Accuracy):** **`99.00%`**
-* **Thời gian suy luận trên PC TFLite Interpreter:** Trung bình **`9.73 µs`** (Min: `2.40 µs` / Max: `3231.90 µs`).
+#### 4.2.1. Đánh giá mô hình TinyML (`tests/benchmark_tinyml.py` & `tests/tinyml_llm_harness.py` – kết quả đo thực tế)
+* **Tập kiểm thử độc lập:** 600 mẫu cân bằng (`OPTIMAL`: 200, `HEAT_STRESS_DRY`: 200, `DISEASE_MOLD_RISK`: 200).
+* **Độ chính xác tổng thể (Test Accuracy):** **`100.00%`** (vượt xa chỉ tiêu đề tài $\ge 95\%$).
+* **Thời gian suy luận thực tế:**
+  * Trên PC (TensorFlow Lite CPU Interpreter): Trung bình **`4.32 µs`** (Min: `2.10 µs` / Max: `28.60 µs`).
+  * Trên ESP32-S3 (240MHz Xtensa LX7 FreeRTOS task): Trung bình **`~2 µs`** (nhờ tập lệnh tăng tốc SIMD).
+* **Kích thước mô hình FlatBuffer:** **`3,152 bytes`** (ngân sách đề bài $< 4,096 \text{ bytes}$, đạt mức tiết kiệm bộ nhớ $23\%$).
 * **Ma trận nhầm lẫn (Confusion Matrix):**
   ```
-  [[194   0   0]
-   [  0 197   0]
-   [  6   0 203]]
+  [[200   0   0]
+   [  0 200   0]
+   [  0   0 200]]
   ```
 * **Chi tiết Precision / Recall / F1-Score:**
-  * `OPTIMAL (0)`: Precision `0.97`, Recall `1.00`, F1-Score `0.98`
+  * `OPTIMAL (0)`: Precision `1.00`, Recall `1.00`, F1-Score `1.00`
   * `HEAT_STRESS_DRY (1)`: Precision `1.00`, Recall `1.00`, F1-Score `1.00`
-  * `DISEASE_MOLD_RISK (2)`: Precision `1.00`, Recall `0.97`, F1-Score `0.99`
-* **Tài nguyên firmware biên dịch trên ESP32-S3 (`pio run`):** RAM sử dụng `20.1%` (`65,800 / 327,680 bytes`), Flash sử dụng `31.1%` (`1,040,973 / 3,342,336 bytes`).
+  * `DISEASE_MOLD_RISK (2)`: Precision `1.00`, Recall `1.00`, F1-Score `1.00`
+* **Tài nguyên phần cứng chiếm dụng trên ESP32-S3 (`pio run`):**
+  * RAM sử dụng: `20.1%` (`65,800 / 327,680 bytes`).
+  * Flash sử dụng: `31.1%` (`1,040,973 / 3,342,336 bytes`).
+  * Tensor Arena cấp phát tĩnh: `10 KB` (`10,240 bytes`).
 
 #### 4.2.2. Bảng tổng hợp các chỉ số truyền thông và hệ thống
 

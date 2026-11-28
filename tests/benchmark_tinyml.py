@@ -5,9 +5,10 @@ Measures:
 - Precision, Recall, F1-Score per class
 - Confusion Matrix
 - Quantized TFLite Inference Latency (microseconds / sample)
-- Memory Footprint (Flash & RAM budget)
+- Memory Footprint
 """
 
+import os
 import json
 import time
 import numpy as np
@@ -16,8 +17,11 @@ from sklearn.metrics import classification_report, confusion_matrix
 import tensorflow as tf
 
 def run_benchmark():
-    tflite_path = "d:/BK/HK261/IoT/Assignment/ai_training/greenhouse_model.tflite"
-    dataset_path = "d:/BK/HK261/IoT/Assignment/ai_training/greenhouse_sensor_data.csv"
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(base_dir, ".."))
+    tflite_path = os.path.join(project_root, "ai_training", "greenhouse_model.tflite")
+    dataset_path = os.path.join(project_root, "ai_training", "greenhouse_sensor_data.csv")
+    metrics_path = os.path.join(project_root, "ai_training", "training_metrics.json")
 
     print("==================================================")
     print("      TINYML MODEL BENCHMARKING (HK261)           ")
@@ -34,21 +38,38 @@ def run_benchmark():
     print(f"Input Shape: {input_details[0]['shape']} | Type: {input_details[0]['dtype']}")
     print(f"Output Shape: {output_details[0]['shape']} | Type: {output_details[0]['dtype']}")
 
-    # 2. Load Test Data
+    # 2. Load Scaler Parameters if available
+    scaler_means = [0.0, 0.0, 0.0, 0.0]
+    scaler_stds = [1.0, 1.0, 1.0, 1.0]
+    if os.path.exists(metrics_path):
+        with open(metrics_path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+            scaler_means = meta.get("scaler_means", scaler_means)
+            scaler_stds = meta.get("scaler_stds", scaler_stds)
+
+    print(f"Using Scaler Means: {[round(m, 4) for m in scaler_means]}")
+    print(f"Using Scaler Stds:  {[round(s, 4) for s in scaler_stds]}")
+
+    # 3. Load Test Data
     df = pd.read_csv(dataset_path)
     X = df[["temp", "humidity", "delta_temp", "delta_humidity"]].values.astype(np.float32)
     y_true = df["label"].values.astype(np.int32)
 
     # Run on last 600 samples as holdout test
-    X_test = X[-600:]
+    X_test_raw = X[-600:]
     y_test = y_true[-600:]
+
+    # Apply standardization
+    means_arr = np.array(scaler_means, dtype=np.float32)
+    stds_arr = np.array(scaler_stds, dtype=np.float32)
+    X_test_scaled = (X_test_raw - means_arr) / stds_arr
 
     y_pred = []
     latencies_us = []
 
-    # 3. Measure Inference Time
-    for i in range(len(X_test)):
-        sample = np.expand_dims(X_test[i], axis=0)
+    # 4. Measure Inference Time
+    for i in range(len(X_test_scaled)):
+        sample = np.expand_dims(X_test_scaled[i], axis=0)
         interpreter.set_tensor(input_details[0]["index"], sample)
 
         t0 = time.perf_counter()

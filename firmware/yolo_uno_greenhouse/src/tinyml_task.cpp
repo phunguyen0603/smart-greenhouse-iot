@@ -58,10 +58,12 @@ void tinyml_task(void *pvParameters) {
         }
 
         // Fill 4 input features: [temp, humidity, delta_temp, delta_humidity]
-        input->data.f[0] = glob_temperature;
-        input->data.f[1] = glob_humidity;
-        input->data.f[2] = glob_delta_temp;
-        input->data.f[3] = glob_delta_humi;
+        // Standardize using StandardScaler parameters from model.h (inherited from TinyML_ESP32 lab)
+        // Formula: z = (x - mean) / std
+        input->data.f[0] = (glob_temperature - FEATURE_MEANS[0]) / FEATURE_STDS[0];
+        input->data.f[1] = (glob_humidity    - FEATURE_MEANS[1]) / FEATURE_STDS[1];
+        input->data.f[2] = (glob_delta_temp  - FEATURE_MEANS[2]) / FEATURE_STDS[2];
+        input->data.f[3] = (glob_delta_humi  - FEATURE_MEANS[3]) / FEATURE_STDS[3];
 
         uint32_t t_start = micros();
         TfLiteStatus invoke_status = interpreter->Invoke();

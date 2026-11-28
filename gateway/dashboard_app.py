@@ -360,24 +360,88 @@ with tab4:
     p4.metric("Dew Condensation Risk", "WARNING" if latest_ai["dew_risk"] else "SAFE")
 
     st.divider()
-    st.subheader("Agricultural LLM Expert Assistant (N01)")
-    api_key_input = st.text_input("Gemini API Key (để trống nếu dùng biến môi trường hoặc chế độ Offline Expert Fallback)", type="password")
-    user_question = st.text_input(
-        "Câu hỏi bổ sung cho chuyên gia AI (tùy chọn):",
-        placeholder="Ví dụ: Với mức VPD hiện tại, tôi nên điều chỉnh chu kỳ quạt và tưới như thế nào?",
+    st.subheader(f"Agricultural LLM Expert Assistant (N01) — {selected_crop}")
+    st.caption("Trợ lý chuyên gia nông học tích hợp mô hình Google Gemini AI trực tuyến.")
+
+    c_key, c_mode = st.columns([2.5, 1.5])
+    api_key_input = c_key.text_input(
+        "Gemini API Key:",
+        value=os.environ.get("GEMINI_API_KEY", ""),
+        placeholder="AQ.Ab8RN6... hoặc AIzaSy...",
+        type="password"
+    )
+    c_mode.markdown(
+        "**Trạng thái AI:**<br>" + 
+        ("🟢 Sẵn sàng gọi Google Gemini" if api_key_input else "🔴 Cần nhập API Key"),
+        unsafe_allow_html=True
     )
 
-    if st.button("🤖 Phân tích tình trạng nhà kính", type="primary"):
-        with st.spinner("Đang tổng hợp dữ liệu và phân tích..."):
+    # Preset Question Buttons
+    st.markdown("**Gợi ý câu hỏi nhanh:**")
+    q_col1, q_col2, q_col3 = st.columns(3)
+    preset_q = ""
+    if q_col1.button("🔥 Cây có nguy cơ sốc nhiệt không?", use_container_width=True):
+        preset_q = "Với tốc độ tăng nhiệt và chỉ số VPD hiện tại, cây có nguy cơ bị sốc nhiệt hoặc cháy rìa lá không?"
+    if q_col2.button("💧 Điều kiện này có dễ sinh nấm mốc?", use_container_width=True):
+        preset_q = "Độ ẩm và VPD hiện tại có tạo điều kiện cho nấm phấn trắng hoặc đọng sương hại lá không?"
+    if q_col3.button("⚡ Có nên bật quạt và tưới lúc này?", use_container_width=True):
+        preset_q = "Tôi nên bật quạt đối lưu hay kích hoạt bơm tưới lúc này? Thời gian khuyến nghị là bao lâu?"
+
+    user_question = st.text_input(
+        "Câu hỏi chuyên sâu cho chuyên gia AI:",
+        value=preset_q if preset_q else "",
+        placeholder="Ví dụ: Giống cây này cần duy trì VPD bao nhiêu để đậu quả tốt nhất?",
+        key="llm_question_input"
+    )
+
+    trend_ctx = {
+        "pred_temp_60m": float(latest_ai.get("predicted_temp_60m", latest_ai["temperature"])),
+        "pred_vpd_60m": float(latest_ai.get("predicted_vpd_60m", latest_ai["vpd"])),
+        "thermal_shock_risk": bool(latest_ai.get("thermal_shock_risk", False)),
+        "dew_risk": bool(latest_ai.get("dew_risk", False)),
+    }
+
+    if st.button("🤖 Phân tích tình trạng & Chẩn đoán sinh lý cây", type="primary", use_container_width=True):
+        with st.spinner("Đang tổng hợp dữ liệu vi khí hậu và hỏi ý kiến Chuyên gia AI..."):
             advice = analyze_greenhouse_state(
-                float(latest_ai["temperature"]),
-                float(latest_ai["humidity"]),
-                float(latest_ai["vpd"]),
-                str(latest_ai["ai_state_str"]),
+                temp=float(latest_ai["temperature"]),
+                humi=float(latest_ai["humidity"]),
+                vpd=float(latest_ai["vpd"]),
+                ai_state_str=str(latest_ai["ai_state_str"]),
                 crop_name=selected_crop,
                 api_key=api_key_input or None,
+                trend_info=trend_ctx,
+                user_question=user_question or None
             )
-        st.success("Hoàn tất phân tích chuyên gia:")
-        st.markdown(advice)
-        if user_question:
-            st.info(f"📌 *Ngữ cảnh câu hỏi của bạn:* \"{user_question}\" — Đề xuất điều khiển tương ứng có thể kích hoạt ngay ở thanh bên trái.")
+            st.session_state["last_llm_advice"] = advice
+            st.session_state["last_advice_node"] = selected_node
+            st.session_state["last_advice_master"] = selected_master
+
+    # Display persistent advice if present in session state
+    if "last_llm_advice" in st.session_state:
+        adv = st.session_state["last_llm_advice"]
+        st.markdown(str(adv))
+
+        # Actionable Recommendation Triggers
+        rec_fan = getattr(adv, "fan", None)
+        rec_pump = getattr(adv, "pump", None)
+        if rec_fan or rec_pump:
+            st.markdown("---")
+            st.markdown("#### ⚡ Thao Tác Chấp Hành Nhanh Theo Khuyến Nghị AI")
+            act_col1, act_col2 = st.columns(2)
+
+            if rec_fan:
+                if act_col1.button("🌀 Bật Quạt Đối Lưu Ngay (Theo AI)", type="secondary", use_container_width=True):
+                    store.update_node_actuators(selected_node, fan=True)
+                    store.enqueue_command(selected_node, "setStateFAN", True)
+                    store.record_event(selected_node, selected_master, "ACTUATOR_RPC", "INFO", "[LLM Assistant] Tự động bật quạt theo khuyến nghị chuyên gia AI.")
+                    st.success("Đã gửi lệnh BẬT Quạt!")
+                    st.rerun()
+
+            if rec_pump:
+                if act_col2.button("💧 Bật Bơm / Phun Sương Ngay (Theo AI)", type="secondary", use_container_width=True):
+                    store.update_node_actuators(selected_node, pump=True)
+                    store.enqueue_command(selected_node, "setStatePUMP", True)
+                    store.record_event(selected_node, selected_master, "ACTUATOR_RPC", "INFO", "[LLM Assistant] Tự động kích hoạt bơm theo khuyến nghị chuyên gia AI.")
+                    st.success("Đã gửi lệnh BẬT Bơm!")
+                    st.rerun()

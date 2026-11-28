@@ -12,6 +12,7 @@ Classes:
 - 2: DISEASE_MOLD_RISK (Độ ẩm quá bão hòa >90% kéo dài, đọng sương, dễ phát sinh nấm bệnh/mốc, VPD < 0.5 kPa)
 """
 
+import os
 import math
 import random
 import csv
@@ -81,4 +82,6 @@ def generate_dataset(output_path, num_samples=3000):
     print(f"Generated {len(data)} samples saved to: {output_path}")
 
 if __name__ == "__main__":
-    generate_dataset("d:/BK/HK261/IoT/Assignment/ai_training/greenhouse_sensor_data.csv", 3000)
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    output_file = os.path.join(base_dir, "greenhouse_sensor_data.csv")
+    generate_dataset(output_file, 3000)

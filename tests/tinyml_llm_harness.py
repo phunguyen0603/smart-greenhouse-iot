@@ -129,10 +129,13 @@ class SmartGreenhouseHarness:
             self.record("Suite 3", f"Profile Exists: {c}", c in CROP_PROFILES, f"Opt VPD: {CROP_PROFILES[c]['vpd_opt']}")
 
         # 3.2 Verify Missing Key Guard
+        saved_env_key = os.environ.pop("GEMINI_API_KEY", None)
         res_empty = analyze_greenhouse_state(
             temp=28.0, humi=70.0, vpd=1.1, ai_state_str="OPTIMAL",
             crop_name="Strawberry (Dâu tây)", api_key=""
         )
+        if saved_env_key is not None:
+            os.environ["GEMINI_API_KEY"] = saved_env_key
         self.record("Suite 3", "Empty API Key Guard", "CHƯA CÓ GEMINI API KEY" in str(res_empty), "Prompts user to input key")
 
         # 3.3 Verify Pure Online Gemini AI Call
